@@ -1,0 +1,10 @@
+version: '3'
+services:
+  api:
+    image: eendorsements/api:latest
+    ports:
+      - "5000:443"
+    volumes:
+      - "~/config/config.net.eendorsements.api.php:/var/config/config.net.eendorsements.api.php"
+      - "~/net.eendorsements.api:/var/www/html"
+    command: "sh etc/symfonize_dev.sh"
