@@ -21,7 +21,7 @@ class BranchService
     private $em;
     private $authChecker;
     private $planService;
-    private $endorsementResponseService;
+    private $offerResponseService;
     private $surveyService;
     private $feedService;
 
@@ -39,7 +39,7 @@ class BranchService
         $this->em = $em;
         $this->authChecker = $authChecker;
         $this->planService = $container->get('plan_service');
-        $this->endorsementResponseService = $container->get('endorsement_response_service');
+        $this->offerResponseService = $container->get('offer_response_service');
         $this->surveyService = $container->get('survey_service');
         $this->feedService = $container->get('feed_service');
     }
@@ -132,7 +132,7 @@ class BranchService
      * @param Branch $branch
      * @return array|null
      */
-    public function getBranchEndorsementFeed(Branch $branch, bool $includeVideosOnly = false)
+    public function getBranchOfferFeed(Branch $branch, bool $includeVideosOnly = false)
     {
         $company = $branch->getCompany();
 
@@ -148,7 +148,7 @@ class BranchService
 
         $branchAdmin = $this->em->getRepository(User::class)->getBranchAdministrator($branch);
 
-        return $this->endorsementResponseService->getEndorsementFeed(
+        return $this->offerResponseService->getOfferFeed(
             $surveys,
             ($feed) ? $feed->getMinimumReviewValue() : self::DEFAULT_MINIMUM_REVIEW_VALUE,
             $branchAdmin,

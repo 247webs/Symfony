@@ -6,10 +6,10 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * Class EndorsementImportMapConstraint
+ * Class OfferImportMapConstraint
  * @package AppBundle\Validator
  */
-class EndorsementImportMapConstraint extends ConstraintValidator
+class OfferImportMapConstraint extends ConstraintValidator
 {
     /**
      * @param mixed $map

@@ -22,7 +22,7 @@ class NoahsArkMigrationCommand extends ContainerAwareCommand
     {
         ini_set('max_execution_time', 0); // Let it rip!
 
-        if ('endorsements' === $input->getArgument('action')) {
+        if ('offers' === $input->getArgument('action')) {
             $this->getContainer()->get('noahs_ark_service')->migrate($input->getArgument('user'));
         }
 

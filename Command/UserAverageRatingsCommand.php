@@ -12,8 +12,8 @@ class UserAverageRatingsCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('eendorsements:calculateUserAverageRating')
-            ->setDescription('One time command script to calculate and Store Average rating and Scorable Endorsements of existing users');
+            ->setName('eoffers:calculateUserAverageRating')
+            ->setDescription('One time command script to calculate and Store Average rating and Scorable Offers of existing users');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -46,9 +46,9 @@ class UserAverageRatingsCommand extends ContainerAwareCommand
 
                     $averageScore = $statService->calculateAverageScoreByUser($profile->getUser());
                     if($averageScore) {
-                        $scorableEndorsements = $statService->countScorableEndorsementsByUser($profile->getUser());
+                        $scorableOffers = $statService->countScorableOffersByUser($profile->getUser());
                         $profile->setAverageRating($averageScore);
-                        $profile->setScorableEndorsements($scorableEndorsements);
+                        $profile->setScorableOffers($scorableOffers);
                     }
                     $profile->setTempRatingProceeded(1);
                     $em->persist($profile);

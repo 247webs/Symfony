@@ -9,7 +9,7 @@ use AppBundle\Enumeration\CompanyAccessRequestStatus;
 use AppBundle\Exception\ApiProblemException;
 use AppBundle\Model\ApiProblem;
 use AppBundle\Repository\CompanyAccessRequestRepository;
-use AppBundle\Representation\PublicEndorsements;
+use AppBundle\Representation\PublicOffers;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -130,7 +130,7 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Get(path="/{user}/endorsements", name="user_endorsements_get")
+     * @Rest\Get(path="/{user}/offers", name="user_offers_get")
      *
      * @ParamConverter(
      *     "user",
@@ -157,12 +157,12 @@ class UserController extends FOSRestController
      *      name="videos_only",
      *      requirements="true|false",
      *      default="false",
-     *      description="Only return endorsements with videos"
+     *      description="Only return offers with videos"
      * )
      *
      * @Doc\ApiDoc(
      *      section="User",
-     *      description="Get user endorsements",
+     *      description="Get user offers",
      *      https="true",
      *      statusCodes={
      *         200="Success",
@@ -170,7 +170,7 @@ class UserController extends FOSRestController
      *     }
      * )
      */
-    public function getEndorsementsAction(User $user, ParamFetcherInterface $paramFetcher)
+    public function getOffersAction(User $user, ParamFetcherInterface $paramFetcher)
     {
         ini_set('memory_limit', '1G'); // Boost the memory
         ini_set('max_execution_time', 0); // Allow unlimited execution time for companies only
@@ -189,27 +189,27 @@ class UserController extends FOSRestController
             'true' == strtolower($paramFetcher->get('videos_only'))
             ? true : false;
 
-        $endorsements = $this->get('user_service')->getUserEndorsementFeed($user, null, null, false, $videosOnly);
+        $offers = $this->get('user_service')->getUserOfferFeed($user, null, null, false, $videosOnly);
 
-        if (!count($endorsements)) {
+        if (!count($offers)) {
             throw new NotFoundHttpException(
-                $user->getFirstName() . ' ' . $user->getLastName() . " does not have any endorsements to share yet"
+                $user->getFirstName() . ' ' . $user->getLastName() . " does not have any offers to share yet"
             );
         }
 
         $statService = $this->get('statistic_service');
 
-        return new PublicEndorsements(
+        return new PublicOffers(
             $statService->calculateAverageScoreByUser($user),
-            $endorsements,
-            $statService->countScorableEndorsementsByUser($user),
+            $offers,
+            $statService->countScorableOffersByUser($user),
             $page,
             $limit
         );
     }
 
     /**
-     * @Rest\Get(path="/{user}/endorsements/summary", name="user_endorsements_summary_get")
+     * @Rest\Get(path="/{user}/offers/summary", name="user_offers_summary_get")
      *
      * @ParamConverter(
      *     "user",
@@ -220,7 +220,7 @@ class UserController extends FOSRestController
      *
      * @Doc\ApiDoc(
      *      section="User",
-     *      description="Get user endorsements summary",
+     *      description="Get user offers summary",
      *      https="true",
      *      statusCodes={
      *         200="Success",
@@ -228,13 +228,13 @@ class UserController extends FOSRestController
      *     }
      * )
      */
-    public function getEndorsementsSummaryAction(User $user)
+    public function getOffersSummaryAction(User $user)
     {
         $response = new \StdClass;
         $statService = $this->get('statistic_service');
 
 
-        $response->total_endorsements = $statService->countScorableEndorsementsByUser($user);
+        $response->total_offers = $statService->countScorableOffersByUser($user);
         $response->average_rating = $statService->calculateAverageScoreByUser($user);
 
         return $this->view((array) $response, Response::HTTP_OK);

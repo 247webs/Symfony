@@ -56,9 +56,9 @@ class LinkedInBroadcastManager extends BroadcastManagerAbstract implements Broad
             }
         }
 
-        // Find endorsements for each share.
+        // Find offers for each share.
         if (count($shares)) {
-            $shares = $this->addEndorsementsToShares($shares, Broadcaster::LINKEDIN);
+            $shares = $this->addOffersToShares($shares, Broadcaster::LINKEDIN);
         }
 
         return $shares;
@@ -87,8 +87,8 @@ class LinkedInBroadcastManager extends BroadcastManagerAbstract implements Broad
      */
     public function share(Share $share)
     {
-        foreach ($share->getEndorsements() as $endorsement) {
-            $content = $this->getPostContent($share, $endorsement);
+        foreach ($share->getOffers() as $offer) {
+            $content = $this->getPostContent($share, $offer);
 
             if (!empty($content)) {
                 $response = $this->container->get('linkedin_service')->post(
@@ -98,14 +98,14 @@ class LinkedInBroadcastManager extends BroadcastManagerAbstract implements Broad
 
                 if (false !== $response) {
                     $this->recordShare(
-                        $endorsement,
+                        $offer,
                         (property_exists($response, 'id')) ? $response->id : 'NO UPDATE KEY',
                         Broadcaster::LINKEDIN,
                         $this->getShareType($share)
                     );
                 } else {
                     $this->recordShare(
-                        $endorsement,
+                        $offer,
                         'SHARE FAILED',
                         Broadcaster::LINKEDIN,
                         $this->getShareType($share)
@@ -117,10 +117,10 @@ class LinkedInBroadcastManager extends BroadcastManagerAbstract implements Broad
 
     /**
      * @param Share $share
-     * @param EndorsementResponse $endorsement
+     * @param OfferResponse $offer
      * @return array
      */
-    public function getPostContent(Share $share, EndorsementResponse $endorsement)
+    public function getPostContent(Share $share, OfferResponse $offer)
     {
         /** @var LinkedInBroadcaster $broadcaster */
         $broadcaster = $share->getBroadcaster();
@@ -135,7 +135,7 @@ class LinkedInBroadcastManager extends BroadcastManagerAbstract implements Broad
             'lifecycleState' => 'PUBLISHED',
             'specificContent' => [
                 'com.linkedin.ugc.ShareContent' => [
-                    'shareCommentary' => ['text' => $this->getEndorsementComments($endorsement)],
+                    'shareCommentary' => ['text' => $this->getOfferComments($offer)],
                     'shareMediaCategory' => 'ARTICLE',
                     'media' => [[
                         'status' => 'READY',
@@ -160,8 +160,8 @@ class LinkedInBroadcastManager extends BroadcastManagerAbstract implements Broad
         $user = $share->getUser();
 
         /** @var string $title */
-        $title = $endorsement->getFirstName() . " from " . $endorsement->getCity() . ', '
-            . $endorsement->getState() . ' endorsed %s';
+        $title = $offer->getFirstName() . " from " . $offer->getCity() . ', '
+            . $offer->getState() . ' endorsed %s';
 
         if (null !== $company) {
             $content = $this->formatCompanyPostContent($content, $company, $title, $url);

@@ -5,13 +5,13 @@ namespace AppBundle\Model;
 use AppBundle\Validator\Constraints as CustomConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class EndorsementReassignList
+class OfferReassignList
 {
     /**
      * @Assert\NotBlank(
      *     message="Map is required"
      * )
-     * @CustomConstraint\EndorsementReassignMapConstraint(
+     * @CustomConstraint\OfferReassignMapConstraint(
      *     message="Map is invalid"
      * )
      */

@@ -94,10 +94,10 @@ class FeedService
         $f->setHeaderBackgroundColor($feed->getHeaderBackgroundColor());
         $f->setHeaderTextColor($feed->getHeaderTextColor());
         $f->setHeaderStarColor($feed->getHeaderStarColor());
-        $f->setEndorsementSourceColor($feed->getEndorsementSourceColor());
-        $f->setEndorsementTextColor($feed->getEndorsementTextColor());
-        $f->setEndorsementReplyColor($feed->getEndorsementReplyColor());
-        $f->setEndorsementStarColor($feed->getEndorsementStarColor());
+        $f->setOfferSourceColor($feed->getOfferSourceColor());
+        $f->setOfferTextColor($feed->getOfferTextColor());
+        $f->setOfferReplyColor($feed->getOfferReplyColor());
+        $f->setOfferStarColor($feed->getOfferStarColor());
         $f->setFooterBackgroundColor($feed->getFooterBackgroundColor());
         $f->setMinimumReviewValue($feed->getMinimumReviewValue());
 

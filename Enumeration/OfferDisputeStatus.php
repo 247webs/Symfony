@@ -2,7 +2,7 @@
 
 namespace AppBundle\Enumeration;
 
-final class EndorsementDisputeStatus
+final class OfferDisputeStatus
 {
     const ACTIVE               = 'active';
     const APPROVED             = 'approved';

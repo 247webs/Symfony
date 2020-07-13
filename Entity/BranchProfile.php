@@ -231,7 +231,7 @@ class BranchProfile
      * @ORM\Column(type="integer", nullable=true, options={"default": null})
      * @Serializer\Groups({"public"})
      */
-    private $scorable_endorsements;
+    private $scorable_offers;
 
     /**
      * @ORM\Column(type="integer", nullable=true, options={"default": null})
@@ -815,27 +815,27 @@ class BranchProfile
     }
 
     /**
-     * Set scorable_endorsements
+     * Set scorable_offers
      *
-     * @param float $scorable_endorsements
+     * @param float $scorable_offers
      *
      * @return CompanyProfile
      */
-    public function setScorableEndorsements($scorable_endorsements)
+    public function setScorableOffers($scorable_offers)
     {
-        $this->scorable_endorsements = $scorable_endorsements;
+        $this->scorable_offers = $scorable_offers;
 
         return $this;
     }
 
     /**
-     * Get scorable_endorsements
+     * Get scorable_offers
      *
      * @return string
      */
-    public function getScorableEndorsements()
+    public function getScorableOffers()
     {
-        return $this->scorable_endorsements;
+        return $this->scorable_offers;
     }
 
     /**

@@ -124,7 +124,7 @@ class MindbodyController extends FOSRestController
      *
      * @Doc\ApiDoc(
      *      section="Mindbody",
-     *      description="Get a list of staff members mapped to the eEndorsements users",
+     *      description="Get a list of staff members mapped to the eOffers users",
      *      https="true",
      *      statusCodes={
      *         201 = "Returned when successful",
@@ -147,7 +147,7 @@ class MindbodyController extends FOSRestController
      *
      * @Doc\ApiDoc(
      *      section="Mindbody",
-     *      description="Map staff members to the eEndorsement users. Will truncate current mapped staff members.",
+     *      description="Map staff members to the eOffer users. Will truncate current mapped staff members.",
      *      https="true",
      *      statusCodes={
      *         201 = "Returned when successful",
@@ -220,9 +220,9 @@ class MindbodyController extends FOSRestController
                     $clientId = $appointment['ClientId'];
 
                     if ($staffId && $clientId) {
-                        $endorsementStaff = $this->get('mindbody_service')->getEndorsementStaff($mindbodyToken, $staffId);
-                        if ($endorsementStaff) {
-                            $user = $endorsementStaff->getUser();
+                        $offerStaff = $this->get('mindbody_service')->getOfferStaff($mindbodyToken, $staffId);
+                        if ($offerStaff) {
+                            $user = $offerStaff->getUser();
                             $client = $this->get('mindbody_service')->getClient($mindbodyToken, $clientId); 
                             $clientContactInfo = $this->parseContactInfo($client);
                             if ($clientContactInfo && $clientContactInfo['email'] != null) {

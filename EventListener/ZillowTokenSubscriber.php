@@ -56,17 +56,17 @@ class ZillowTokenSubscriber implements EventSubscriber
 
             if (null !== $token->getUser()) {
                 $this->cm
-                    ->invalidateRegex('/user/' . $token->getUser()->getSlug() . '/endorsements');
+                    ->invalidateRegex('/user/' . $token->getUser()->getSlug() . '/offers');
             }
 
             if (null !== $token->getBranch()) {
                 $this->cm
-                    ->invalidateRegex('/branch/' . $token->getBranch()->getSlug() . '/endorsements');
+                    ->invalidateRegex('/branch/' . $token->getBranch()->getSlug() . '/offers');
             }
 
             if (null !== $token->getCompany()) {
                 $this->cm
-                    ->invalidateRegex('/company/' . $token->getCompany()->getSlug() . '/endorsements');
+                    ->invalidateRegex('/company/' . $token->getCompany()->getSlug() . '/offers');
             }
         }
     }

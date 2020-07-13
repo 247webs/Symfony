@@ -1,8 +1,8 @@
 ### Develop with vendors mapped
-`docker run -it --rm -p 5000:443 -v ~/config/config.net.eendorsements.api.php:/var/config/config.net.eendorsements.api.php -v ~/net.eendorsements.api:/var/www/html eendorsements/api:latest sh etc/symfonize_dev.sh`
+`docker run -it --rm -p 5000:443 -v ~/config/config.net.eoffers.api.php:/var/config/config.net.eoffers.api.php -v ~/net.eoffers.api:/var/www/html eoffers/api:latest sh etc/symfonize_dev.sh`
 
 ### Develop for speed:
-`docker run -it --rm -p 5000:443  -v ~/config/config.net.eendorsements.api.php:/var/config/config.net.eendorsements.api.php -v ~/net.eendorsements.api/app:/var/www/html/app -v ~/net.eendorsements.api/src:/var/www/html/src -v ~/net.eendorsements.api/var:/var/www/html/var -v ~/net.eendorsements.api/web:/var/www/html/web eendorsements/api:latest sh etc/symfonize_dev.sh`
+`docker run -it --rm -p 5000:443  -v ~/config/config.net.eoffers.api.php:/var/config/config.net.eoffers.api.php -v ~/net.eoffers.api/app:/var/www/html/app -v ~/net.eoffers.api/src:/var/www/html/src -v ~/net.eoffers.api/var:/var/www/html/var -v ~/net.eoffers.api/web:/var/www/html/web eoffers/api:latest sh etc/symfonize_dev.sh`
 
 
 

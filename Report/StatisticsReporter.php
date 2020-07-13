@@ -6,12 +6,12 @@ use AppBundle\Document\Statistic\BranchProfilePageView;
 use AppBundle\Document\Statistic\BranchProfileSurveyLinkClick;
 use AppBundle\Document\Statistic\CompanyProfilePageView;
 use AppBundle\Document\Statistic\CompanyProfileSurveyLinkClick;
-use AppBundle\Document\Statistic\EndorsementRequestDelivered;
-use AppBundle\Document\Statistic\EndorsementRequestFailed;
-use AppBundle\Document\Statistic\EndorsementRequestLinkClicked;
-use AppBundle\Document\Statistic\EndorsementRequestOpened;
-use AppBundle\Document\Statistic\EndorsementRequestSent;
-use AppBundle\Document\Statistic\EndorsementResponseReceived;
+use AppBundle\Document\Statistic\OfferRequestDelivered;
+use AppBundle\Document\Statistic\OfferRequestFailed;
+use AppBundle\Document\Statistic\OfferRequestLinkClicked;
+use AppBundle\Document\Statistic\OfferRequestOpened;
+use AppBundle\Document\Statistic\OfferRequestSent;
+use AppBundle\Document\Statistic\OfferResponseReceived;
 use AppBundle\Document\Statistic\Share;
 use AppBundle\Document\Statistic\UserProfilePageView;
 use AppBundle\Document\Statistic\UserProfileSurveyLinkClick;
@@ -43,29 +43,29 @@ class StatisticsReporter
     public function reportByUser(User $user)
     {
         return [
-            'endorsement_requests_sent' => $this->statService->countUserStats(
+            'offer_requests_sent' => $this->statService->countUserStats(
                 $user,
-                EndorsementRequestSent::class
+                OfferRequestSent::class
             ),
-            'endorsement_requests_delivered' => $this->statService->countUserStats(
+            'offer_requests_delivered' => $this->statService->countUserStats(
                 $user,
-                EndorsementRequestDelivered::class
+                OfferRequestDelivered::class
             ),
-            'endorsement_requests_failed' => $this->statService->countUserStats(
+            'offer_requests_failed' => $this->statService->countUserStats(
                 $user,
-                EndorsementRequestFailed::class
+                OfferRequestFailed::class
             ),
-            'endorsement_requests_opened' => $this->statService->countUserStats(
+            'offer_requests_opened' => $this->statService->countUserStats(
                 $user,
-                EndorsementRequestOpened::class
+                OfferRequestOpened::class
             ),
-            'endorsement_request_links_clicked' => $this->statService->countUserStats(
+            'offer_request_links_clicked' => $this->statService->countUserStats(
                 $user,
-                EndorsementRequestLinkClicked::class
+                OfferRequestLinkClicked::class
             ),
-            'endorsement_responses_received' => $this->statService->countUserStats(
+            'offer_responses_received' => $this->statService->countUserStats(
                 $user,
-                EndorsementResponseReceived::class
+                OfferResponseReceived::class
             ),
             'shares' => $this->statService->countUserStats(
                 $user,
@@ -80,7 +80,7 @@ class StatisticsReporter
                 UserProfileSurveyLinkClick::class
             ),
             'average_score' => $this->statService->calculateAverageScoreByUser($user),
-            'total_endorsements' => $this->statService->countScorableEndorsementsByUser($user),
+            'total_offers' => $this->statService->countScorableOffersByUser($user),
             'average_promoter_index' => $this->statService->calculateAveragePromoterIndexByUser($user)
         ];
     }
@@ -92,29 +92,29 @@ class StatisticsReporter
     public function reportByBranch(Branch $branch)
     {
         return [
-            'endorsement_requests_sent' => $this->statService->countBranchStats(
+            'offer_requests_sent' => $this->statService->countBranchStats(
                 $branch,
-                EndorsementRequestSent::class
+                OfferRequestSent::class
             ),
-            'endorsement_requests_delivered' => $this->statService->countBranchStats(
+            'offer_requests_delivered' => $this->statService->countBranchStats(
                 $branch,
-                EndorsementRequestDelivered::class
+                OfferRequestDelivered::class
             ),
-            'endorsement_requests_failed' => $this->statService->countBranchStats(
+            'offer_requests_failed' => $this->statService->countBranchStats(
                 $branch,
-                EndorsementRequestFailed::class
+                OfferRequestFailed::class
             ),
-            'endorsement_requests_opened' => $this->statService->countBranchStats(
+            'offer_requests_opened' => $this->statService->countBranchStats(
                 $branch,
-                EndorsementRequestOpened::class
+                OfferRequestOpened::class
             ),
-            'endorsement_request_links_clicked' => $this->statService->countBranchStats(
+            'offer_request_links_clicked' => $this->statService->countBranchStats(
                 $branch,
-                EndorsementRequestLinkClicked::class
+                OfferRequestLinkClicked::class
             ),
-            'endorsement_responses_received' => $this->statService->countBranchStats(
+            'offer_responses_received' => $this->statService->countBranchStats(
                 $branch,
-                EndorsementResponseReceived::class
+                OfferResponseReceived::class
             ),
             'shares' => $this->statService->countBranchStats(
                 $branch,
@@ -129,7 +129,7 @@ class StatisticsReporter
                 BranchProfileSurveyLinkClick::class
             ),
             'average_score' => $this->statService->calculateAverageScoreByBranch($branch),
-            'total_endorsements' => $this->statService->countScorableEndorsementsByBranch($branch),
+            'total_offers' => $this->statService->countScorableOffersByBranch($branch),
             'average_promoter_index' => $this->statService->calculateAveragePromoterIndexByBranch($branch)
         ];
     }
@@ -141,29 +141,29 @@ class StatisticsReporter
     public function reportByCompany(Company $company)
     {
         return [
-            'endorsement_requests_sent' => $this->statService->countCompanyStats(
+            'offer_requests_sent' => $this->statService->countCompanyStats(
                 $company,
-                EndorsementRequestSent::class
+                OfferRequestSent::class
             ),
-            'endorsement_requests_delivered' => $this->statService->countCompanyStats(
+            'offer_requests_delivered' => $this->statService->countCompanyStats(
                 $company,
-                EndorsementRequestDelivered::class
+                OfferRequestDelivered::class
             ),
-            'endorsement_requests_failed' => $this->statService->countCompanyStats(
+            'offer_requests_failed' => $this->statService->countCompanyStats(
                 $company,
-                EndorsementRequestFailed::class
+                OfferRequestFailed::class
             ),
-            'endorsement_requests_opened' => $this->statService->countCompanyStats(
+            'offer_requests_opened' => $this->statService->countCompanyStats(
                 $company,
-                EndorsementRequestOpened::class
+                OfferRequestOpened::class
             ),
-            'endorsement_request_links_clicked' => $this->statService->countCompanyStats(
+            'offer_request_links_clicked' => $this->statService->countCompanyStats(
                 $company,
-                EndorsementRequestLinkClicked::class
+                OfferRequestLinkClicked::class
             ),
-            'endorsement_responses_received' => $this->statService->countCompanyStats(
+            'offer_responses_received' => $this->statService->countCompanyStats(
                 $company,
-                EndorsementResponseReceived::class
+                OfferResponseReceived::class
             ),
             'shares' => $this->statService->countCompanyStats(
                 $company,
@@ -178,7 +178,7 @@ class StatisticsReporter
                 CompanyProfileSurveyLinkClick::class
             ),
             'average_score' => $this->statService->calculateAverageScoreByCompany($company),
-            'total_endorsements' => $this->statService->countScorableEndorsementsByCompany($company),
+            'total_offers' => $this->statService->countScorableOffersByCompany($company),
             'average_promoter_index' => $this->statService->calculateAveragePromoterIndexByCompany($company)
         ];
     }

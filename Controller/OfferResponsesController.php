@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Representation\EndorsementResponses;
+use AppBundle\Representation\OfferResponses;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -10,11 +10,11 @@ use Nelmio\ApiDocBundle\Annotation as Doc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-/** @Route("/endorsement-responses") */
-class EndorsementResponsesController extends FOSRestController
+/** @Route("/offer-responses") */
+class OfferResponsesController extends FOSRestController
 {
     /**
-     * @Rest\Get("", name="endorsement_responses_get")
+     * @Rest\Get("", name="offer_responses_get")
      *
      * @Rest\QueryParam(
      *      name="filter",
@@ -59,8 +59,8 @@ class EndorsementResponsesController extends FOSRestController
      * )
      *
      * @Doc\ApiDoc(
-     *      section="Endorsement Response",
-     *      description="Retrieve Endorsement Responses",
+     *      section="Offer Response",
+     *      description="Retrieve Offer Responses",
      *      https="true",
      *      statusCodes={
      *         200 = "Returned when successful",
@@ -84,23 +84,23 @@ class EndorsementResponsesController extends FOSRestController
         $disableUserFilter = $paramFetcher->get('disable_user_filter');
 
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $endorsementResponseRepo = $dm->getRepository('AppBundle:EndorsementResponse');
+        $offerResponseRepo = $dm->getRepository('AppBundle:OfferResponse');
 
         /**
-         * eEndorsement Administrators may search against all endorsements by disabling the user filter
+         * eOffer Administrators may search against all offers by disabling the user filter
          */
         if ("true" == $disableUserFilter &&
             $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')
         ) {
-            $query = $endorsementResponseRepo->filter(
+            $query = $offerResponseRepo->filter(
                 $filter,
                 $orderBy,
                 $orderDirection
             );
 
-            return new EndorsementResponses(
+            return new OfferResponses(
                 $query,
-                $endorsementResponseRepo->getCount(),
+                $offerResponseRepo->getCount(),
                 $limit,
                 $page
             );
@@ -161,41 +161,41 @@ class EndorsementResponsesController extends FOSRestController
         $users = (isset($userEntity)) ? [$userEntity->getId()] : $userService->getUserIdsByUserRole($this->getUser());
 
         /**
-         * Get an array of endorsement request ids for a group of users.
+         * Get an array of offer request ids for a group of users.
          */
-        $endorsementRequests = $this->get('endorsement_request_service')->getEndorsementRequestsByUsers($users);
+        $offerRequests = $this->get('offer_request_service')->getOfferRequestsByUsers($users);
 
         /**
          * If there are no requests, return empty response; In this method, we don't want to
-         * expose any endorsement responses that don't belong to the logged in user.
+         * expose any offer responses that don't belong to the logged in user.
          */
-        if (!count($endorsementRequests)) {
+        if (!count($offerRequests)) {
             return [];
         }
 
         /**
-         * Find endorsement responses
+         * Find offer responses
          */
-        $query = $endorsementResponseRepo->filter(
+        $query = $offerResponseRepo->filter(
             $filter,
             $orderBy,
             $orderDirection,
-            $endorsementRequests
+            $offerRequests
         );
 
         /**
-         * Return an endorsement responses representation
+         * Return an offer responses representation
          */
-        return new EndorsementResponses(
+        return new OfferResponses(
             $query,
-            $endorsementResponseRepo->getCount(null, $endorsementRequests),
+            $offerResponseRepo->getCount(null, $offerRequests),
             $limit,
             $page
         );
     }
 
     /**
-     * @Rest\Get("/consumer", name="customer_endorsement_responses_get")
+     * @Rest\Get("/consumer", name="customer_offer_responses_get")
      *
      * @Rest\QueryParam(
      *      name="filter",
@@ -235,8 +235,8 @@ class EndorsementResponsesController extends FOSRestController
      * )
      *
      * @Doc\ApiDoc(
-     *      section="Endorsement Request",
-     *      description="Retrieve Endorsement Requests",
+     *      section="Offer Request",
+     *      description="Retrieve Offer Requests",
      *      https="true",
      *      statusCodes={
      *         200 = "Returned when successful",
@@ -245,7 +245,7 @@ class EndorsementResponsesController extends FOSRestController
      *     }
      * )
      */
-    public function getCustomerEndorsementsAction(ParamFetcherInterface $paramFetcher)
+    public function getCustomerOffersAction(ParamFetcherInterface $paramFetcher)
     {
         $filter = $paramFetcher->get('filter');
         $recipientEmail = $paramFetcher->get('recipient_email');
@@ -258,28 +258,28 @@ class EndorsementResponsesController extends FOSRestController
         $page = (empty($paramFetcher->get('page'))) ? 1 : $paramFetcher->get('page');
 
         /**
-         * Get an array of endorsement request ids for the given recipientEmail
+         * Get an array of offer request ids for the given recipientEmail
          */
-        $endorsementRequests = $this->get('endorsement_request_service')->getEndorsementRequestsByRecipient($recipientEmail);
+        $offerRequests = $this->get('offer_request_service')->getOfferRequestsByRecipient($recipientEmail);
 
         /**
-         * Find endorsement responses
+         * Find offer responses
          */
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $endorsementResponseRepo = $dm->getRepository('AppBundle:EndorsementResponse');
-        $query = $endorsementResponseRepo->filter(
+        $offerResponseRepo = $dm->getRepository('AppBundle:OfferResponse');
+        $query = $offerResponseRepo->filter(
             $filter,
             $orderBy,
             $orderDirection,
-            $endorsementRequests
+            $offerRequests
         );
 
         /**
-         * Return an endorsement responses representation
+         * Return an offer responses representation
          */
-        return new EndorsementResponses(
+        return new OfferResponses(
             $query,
-            $endorsementResponseRepo->getCount(null, $endorsementRequests),
+            $offerResponseRepo->getCount(null, $offerRequests),
             $limit,
             $page
         );

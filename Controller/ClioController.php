@@ -139,7 +139,7 @@ class ClioController extends FOSRestController
      *
      * @Doc\ApiDoc(
      *      section="Clio",
-     *      description="Map Clio users to the eEndorsement users",
+     *      description="Map Clio users to the eOffer users",
      *      https="true",
      *      statusCodes={
      *         201 = "Returned when successful",

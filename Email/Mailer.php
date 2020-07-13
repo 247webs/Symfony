@@ -2,27 +2,27 @@
 
 namespace AppBundle\Email;
 
-use AppBundle\Document\EndorsementDispute;
-use AppBundle\Document\EndorsementRequest;
-use AppBundle\Document\EndorsementResponse;
+use AppBundle\Document\OfferDispute;
+use AppBundle\Document\OfferRequest;
+use AppBundle\Document\OfferResponse;
 use AppBundle\Entity\CompanyAccessRequest;
 use AppBundle\Entity\Contact;
 use AppBundle\Entity\Survey;
 use AppBundle\Entity\User;
-use AppBundle\Enumeration\EndorsementDisputeStatus;
+use AppBundle\Enumeration\OfferDisputeStatus;
 use Swift_Transport;
 use Twig_Environment;
 
 class Mailer extends \Swift_Mailer
 {
-    const DEFAULT_FROM_NAME = 'eEndorsements';
-    const DEFAULT_FROM_ADDRESS = 'request@mg.eendorsements.com';
+    const DEFAULT_FROM_NAME = 'eOffers';
+    const DEFAULT_FROM_ADDRESS = 'request@mg.eoffers.com';
 
-    const SUBJECT_WELCOME_EMAIL = 'Welcome to eEndorsements';
+    const SUBJECT_WELCOME_EMAIL = 'Welcome to eOffers';
     const SUBJECT_PASSWORD_RESET = 'Password Reset Instructions';
-    const SUBJECT_DISPUTE_NEW = 'New endorsement dispute';
-    const SUBJECT_DISPUTE_APPROVED = 'Endorsement dispute approved';
-    const SUBJECT_DISPUTE_REJECTED = 'Endorsement dispute denied';
+    const SUBJECT_DISPUTE_NEW = 'New offer dispute';
+    const SUBJECT_DISPUTE_APPROVED = 'Offer dispute approved';
+    const SUBJECT_DISPUTE_REJECTED = 'Offer dispute denied';
 
     /** @var Twig_Environment */
     private $twig;
@@ -62,7 +62,7 @@ class Mailer extends \Swift_Mailer
             $from .= ' ' . $survey->getMerchantLastName();
         }
 
-        return ['survey@mg.eendorsements.com' => $from];
+        return ['survey@mg.eoffers.com' => $from];
     }
 
     /**
@@ -130,42 +130,42 @@ class Mailer extends \Swift_Mailer
 
     /**
      * @param Survey $survey
-     * @param EndorsementRequest $endorsementRequest
+     * @param OfferRequest $offerRequest
      * @param $surveyLink
      * @return int
      */
-    public function sendEndorsementRequestToRecipient(
+    public function sendOfferRequestToRecipient(
         Survey $survey,
-        EndorsementRequest $endorsementRequest,
+        OfferRequest $offerRequest,
         $surveyLink,
         $feedbackLink = null,
-        $endorsementsReceived = 0,
+        $offersReceived = 0,
         $averageScore = 0
     ) {
         switch ($survey->getType()) {
             case Survey::SURVEY_TYPE_REVIEW_PUSH:
-                $body = $this->twig->render(':Email:endorsement_request_review_push.html.twig', [
+                $body = $this->twig->render(':Email:offer_request_review_push.html.twig', [
                     'survey' => $survey,
-                    'endorsementRequest' => $endorsementRequest,
+                    'offerRequest' => $offerRequest,
                     'surveyLink' => $surveyLink,
                     'feedbackLink' => $feedbackLink,
-                    'endorsementsReceived' => $endorsementsReceived,
+                    'offersReceived' => $offersReceived,
                     'averageScore' => $averageScore
                 ]);
                 break;
             case Survey::SURVEY_TYPE_VIDEOMONIAL:
-                $body = $this->twig->render(':Email:endorsement_request_videomonial.html.twig', [
+                $body = $this->twig->render(':Email:offer_request_videomonial.html.twig', [
                     'survey' => $survey,
-                    'endorsementRequest' => $endorsementRequest,
+                    'offerRequest' => $offerRequest,
                     'surveyLink' => $surveyLink,
-                    'endorsementsReceived' => $endorsementsReceived,
+                    'offersReceived' => $offersReceived,
                     'averageScore' => $averageScore
                 ]);
                 break;
             default:
-                $body = $this->twig->render(':Email:endorsement_request.html.twig', [
+                $body = $this->twig->render(':Email:offer_request.html.twig', [
                     'survey' => $survey,
-                    'endorsementRequest' => $endorsementRequest,
+                    'offerRequest' => $offerRequest,
                     'surveyLink' => $surveyLink
                 ]);
         }
@@ -175,17 +175,17 @@ class Mailer extends \Swift_Mailer
             ->setSubject($survey->getSurveySubjectLine())
             ->setFrom($this->getSurveySenderFromAddress($survey))
             ->setReplyTo(trim($survey->getMerchantEmailAddress()))
-            ->setTo(trim($endorsementRequest->getRecipientEmail()))
+            ->setTo(trim($offerRequest->getRecipientEmail()))
             ->setBody($body, 'text/html');
 
         $message->getHeaders()->addTextHeader('X-Mailgun-Variables', json_encode([
-            'endorsement_request_id' => $endorsementRequest->getId(),
+            'offer_request_id' => $offerRequest->getId(),
         ]));
 
         return $this->send($message);
     }
 
-    public function sendEndorsementRequestReminder(
+    public function sendOfferRequestReminder(
         Survey $survey,
         Contact $contact,
         $surveyLink,
@@ -193,14 +193,14 @@ class Mailer extends \Swift_Mailer
     ) {
         switch ($survey->getType()) {
             case Survey::SURVEY_TYPE_REVIEW_PUSH:
-                $body = $this->twig->render(':Email:endorsement_request_review_push.html.twig', [
+                $body = $this->twig->render(':Email:offer_request_review_push.html.twig', [
                     'survey' => $survey,
                     'surveyLink' => $surveyLink,
                     'feedbackLink' => $feedbackLink
                 ]);
                 break;
             default:
-                $body = $this->twig->render(':Email:endorsement_request_reminder.html.twig', [
+                $body = $this->twig->render(':Email:offer_request_reminder.html.twig', [
                     'survey' => $survey,
                     'contact' => $contact,
                     'surveyLink' => $surveyLink
@@ -219,27 +219,27 @@ class Mailer extends \Swift_Mailer
     }
 
     /**
-     * @param EndorsementResponse $endorsementResponse
+     * @param OfferResponse $offerResponse
      * @param Survey $survey
      * @param array $responses
      * @param array $ccs
      * @return int
      */
-    public function sendEndorsementReceiptToSurveyOwner(
-        EndorsementResponse $endorsementResponse,
+    public function sendOfferReceiptToSurveyOwner(
+        OfferResponse $offerResponse,
         Survey $survey,
         array $responses = [],
         array $ccs = []
     ) {
-        $body = $this->twig->render(':Email:endorsementNotification.html.twig', [
-            'endorsementResponse' => $endorsementResponse,
+        $body = $this->twig->render(':Email:offerNotification.html.twig', [
+            'offerResponse' => $offerResponse,
             'survey' => $survey,
             'responses' => $responses
         ]);
 
         $message = new \Swift_Message;
         $message
-            ->setSubject('Endorsement Received')
+            ->setSubject('Offer Received')
             ->setFrom($this->getDefaultFromAddress())
             ->setTo(trim($survey->getMerchantEmailAddress()))
             ->setBody($body, 'text/html');
@@ -252,25 +252,25 @@ class Mailer extends \Swift_Mailer
     }
 
     /**
-     * @param EndorsementResponse $endorsementResponse
+     * @param OfferResponse $offerResponse
      * @param Survey $survey
      * @param array $responses
      * @param array $ccs
      * @return int
      */
-    public function sendEndorsementVideoReceiptToSurveyOwner(
-        EndorsementResponse $endorsementResponse,
+    public function sendOfferVideoReceiptToSurveyOwner(
+        OfferResponse $offerResponse,
         Survey $survey,
         array $ccs = []
     ) {
-        $body = $this->twig->render(':Email:endorsementVideoNotification.html.twig', [
-            'endorsementResponse' => $endorsementResponse,
+        $body = $this->twig->render(':Email:offerVideoNotification.html.twig', [
+            'offerResponse' => $offerResponse,
             'survey' => $survey
         ]);
 
         $message = new \Swift_Message;
         $message
-            ->setSubject('Video Endorsement Received')
+            ->setSubject('Video Offer Received')
             ->setFrom($this->getDefaultFromAddress())
             ->setTo(trim($survey->getMerchantEmailAddress()))
             ->setBody($body, 'text/html');
@@ -283,48 +283,48 @@ class Mailer extends \Swift_Mailer
     }
 
     /**
-     * @param EndorsementResponse $endorsementResponse
+     * @param OfferResponse $offerResponse
      * @param string $link
      * @return int
      */
-    public function sendEndorsementVerificationRequest(EndorsementResponse $endorsementResponse, string $link)
+    public function sendOfferVerificationRequest(OfferResponse $offerResponse, string $link)
     {
-        $body = $this->twig->render(':Email:endorsementVerification.html.twig', [
-            'endorsementResponse' => $endorsementResponse,
+        $body = $this->twig->render(':Email:offerVerification.html.twig', [
+            'offerResponse' => $offerResponse,
             'link' => $link
         ]);
 
         $message = new \Swift_Message;
         $message
-            ->setSubject('Endorsement Verification Requested')
+            ->setSubject('Offer Verification Requested')
             ->setFrom($this->getDefaultFromAddress())
-            ->setTo(trim($endorsementResponse->getEmail()))
+            ->setTo(trim($offerResponse->getEmail()))
             ->setBody($body, 'text/html');
 
         return $this->send($message);
     }
 
-    public function sendEndorsementReply(EndorsementResponse $endorsementResponse, Survey $survey)
+    public function sendOfferReply(OfferResponse $offerResponse, Survey $survey)
     {
-        $body = $this->twig->render(':Email:endorsementReply.html.twig', [
-            'endorsementResponse' => $endorsementResponse,
+        $body = $this->twig->render(':Email:offerReply.html.twig', [
+            'offerResponse' => $offerResponse,
             'survey' => $survey
         ]);
 
         $message = new \Swift_Message;
         $message
-            ->setSubject('re: Your Recent Endorsement')
+            ->setSubject('re: Your Recent Offer')
             ->setFrom($this->getSurveySenderFromAddress($survey))
             ->setReplyTo(trim($survey->getMerchantEmailAddress()))
-            ->setTo(trim($endorsementResponse->getEmail()))
+            ->setTo(trim($offerResponse->getEmail()))
             ->setBody($body, 'text/html');
 
         return $this->send($message);
     }
 
-    public function sendEndorsementDisputeToAdmin($disputeLink, $to)
+    public function sendOfferDisputeToAdmin($disputeLink, $to)
     {
-        $body = $this->twig->render(':Email:endorsement_dispute.html.twig', [
+        $body = $this->twig->render(':Email:offer_dispute.html.twig', [
             'disputeLink' => $disputeLink
         ]);
 
@@ -338,19 +338,19 @@ class Mailer extends \Swift_Mailer
         $this->send($message);
     }
 
-    public function sendEndorsementDisputeUpdate(
-        EndorsementDispute $dispute,
+    public function sendOfferDisputeUpdate(
+        OfferDispute $dispute,
         Survey $survey,
         array $to,
         array $responses = []
     ) {
         switch ($dispute->getStatus()) {
-            case (EndorsementDisputeStatus::APPROVED):
-                $template = ':Email:endorsement_dispute_approved.html.twig';
+            case (OfferDisputeStatus::APPROVED):
+                $template = ':Email:offer_dispute_approved.html.twig';
                 $subject = static::SUBJECT_DISPUTE_APPROVED;
                 break;
-            case (EndorsementDisputeStatus::REJECTED):
-                $template = ':Email:endorsement_dispute_rejected.html.twig';
+            case (OfferDisputeStatus::REJECTED):
+                $template = ':Email:offer_dispute_rejected.html.twig';
                 $subject = static::SUBJECT_DISPUTE_REJECTED;
                 break;
             default:
@@ -359,7 +359,7 @@ class Mailer extends \Swift_Mailer
 
         $body = $this->twig->render($template, [
             'dispute' => $dispute,
-            'endorsementResponse' => $dispute->getEndorsementResponse(),
+            'offerResponse' => $dispute->getOfferResponse(),
             'survey' => $survey,
             'responses' => $responses
         ]);
@@ -392,7 +392,7 @@ class Mailer extends \Swift_Mailer
 
         $message = new \Swift_Message;
         $message
-            ->setSubject("New eEndorsements Team Member")
+            ->setSubject("New eOffers Team Member")
             ->setFrom($this->getDefaultFromAddress())
             ->setTo(trim($recipient->getUsername()))
             ->setBody($body, 'text/html');
@@ -412,7 +412,7 @@ class Mailer extends \Swift_Mailer
 
         $message = new \Swift_Message;
         $message
-            ->setSubject("eEndorsements Account Access Granted")
+            ->setSubject("eOffers Account Access Granted")
             ->setFrom($this->getDefaultFromAddress())
             ->setTo(trim($companyAccessRequest->getAccessRequestor()->getUsername()))
             ->setBody($body, 'text/html');
@@ -432,7 +432,7 @@ class Mailer extends \Swift_Mailer
 
         $message = new \Swift_Message;
         $message
-            ->setSubject("eEndorsements Account Access Declined")
+            ->setSubject("eOffers Account Access Declined")
             ->setFrom($this->getDefaultFromAddress())
             ->setTo(trim($companyAccessRequest->getAccessRequestor()->getUsername()))
             ->setBody($body, 'text/html');

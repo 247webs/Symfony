@@ -13,7 +13,7 @@ class AthenaImportContactsCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('eendorsements:importathenacontacts')
+            ->setName('eoffers:importathenacontacts')
             ->setDescription('Import contacts from Athena');
     }
 

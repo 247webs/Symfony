@@ -5,10 +5,10 @@ namespace AppBundle\Entity;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * Class PublicEndorsement
+ * Class PublicOffer
  * @package AppBundle\Entity
  */
-class PublicEndorsement
+class PublicOffer
 {
     const SOURCE_INTERNAL = 'internal';
     const SOURCE_GOOGLE_MY_BUSINESS = 'google_my_business';
@@ -104,13 +104,13 @@ class PublicEndorsement
      * @var string
      * @Serializer\Type("string")
      */
-    private $video_endorsement;
+    private $video_offer;
 
     /**
      * @var string
      * @Serializer\Type("string")
      */
-    private $video_endorsement_thumbnail;
+    private $video_offer_thumbnail;
 
     /**
      * @var string
@@ -288,33 +288,33 @@ class PublicEndorsement
     /**
      * @return string|null
      */
-    public function getVideoEndorsement()
+    public function getVideoOffer()
     {
-        return $this->video_endorsement;
+        return $this->video_offer;
     }
 
     /**
-     * @param string|null $video_endorsement
+     * @param string|null $video_offer
      */
-    public function setVideoEndorsement($video_endorsement)
+    public function setVideoOffer($video_offer)
     {
-        $this->video_endorsement = $video_endorsement;
+        $this->video_offer = $video_offer;
     }
 
     /**
      * @return string
      */
-    public function getVideoEndorsementThumbnail(): string
+    public function getVideoOfferThumbnail(): string
     {
-        return $this->video_endorsement_thumbnail;
+        return $this->video_offer_thumbnail;
     }
 
     /**
-     * @param string $video_endorsement_thumbnail
+     * @param string $video_offer_thumbnail
      */
-    public function setVideoEndorsementThumbnail(string $video_endorsement_thumbnail)
+    public function setVideoOfferThumbnail(string $video_offer_thumbnail)
     {
-        $this->video_endorsement_thumbnail = $video_endorsement_thumbnail;
+        $this->video_offer_thumbnail = $video_offer_thumbnail;
     }
 
     /**

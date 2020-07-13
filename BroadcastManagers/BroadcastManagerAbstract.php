@@ -3,8 +3,8 @@
 namespace AppBundle\BroadcastManagers;
 
 use AppBundle\Document\Answer\CommentBoxAnswer;
-use AppBundle\Document\EndorsementRequest;
-use AppBundle\Document\EndorsementResponse;
+use AppBundle\Document\OfferRequest;
+use AppBundle\Document\OfferResponse;
 use AppBundle\Document\Sharing\AutoSharing;
 use AppBundle\Document\Sharing\Broadcaster\BroadcasterAbstract;
 use AppBundle\Document\Sharing\SharingProfile;
@@ -109,16 +109,16 @@ abstract class BroadcastManagerAbstract
      * @param array $shares
      * @return array
      */
-    public function addEndorsementsToShares(array $shares, string $broadcaster) :array
+    public function addOffersToShares(array $shares, string $broadcaster) :array
     {
         /** @var Share $share */
         foreach ($shares as $key => $share) {
-            $endorsements = $this->getEndorsements($share->getSharingProfile(), $broadcaster);
+            $offers = $this->getOffers($share->getSharingProfile(), $broadcaster);
 
-            if (empty($endorsements)) { // If we can't find an endorsement, remove the share.
+            if (empty($offers)) { // If we can't find an offer, remove the share.
                 unset($shares[$key]);
             } else {
-                $shares[$key] = $this->buildShare($share, null, null, $endorsements);
+                $shares[$key] = $this->buildShare($share, null, null, $offers);
             }
         }
 
@@ -126,20 +126,20 @@ abstract class BroadcastManagerAbstract
     }
 
     /**
-     * @param EndorsementResponse $endorsementResponse
+     * @param OfferResponse $offerResponse
      * @param string $response
      * @param string $broadcaster
      * @param string $type
      * @return bool
      */
     public function recordShare(
-        EndorsementResponse $endorsementResponse,
+        OfferResponse $offerResponse,
         string $response,
         string $broadcaster,
         string $type
     ) {
         $date = new \DateTime;
-        $shared = $endorsementResponse->getShared();
+        $shared = $offerResponse->getShared();
 
         switch ($type) {
             case 'company':
@@ -152,9 +152,9 @@ abstract class BroadcastManagerAbstract
                 $shared['user_' . $broadcaster ] = $date->format('Y-m-d H:i:s') . ' ' . $response;
         }
 
-        $endorsementResponse->setShared($shared);
+        $offerResponse->setShared($shared);
 
-        $this->dm->persist($endorsementResponse);
+        $this->dm->persist($offerResponse);
         $this->dm->flush();
 
         return true;
@@ -251,14 +251,14 @@ abstract class BroadcastManagerAbstract
      * @param Share|null $share
      * @param BroadcasterAbstract|null $broadcaster
      * @param SharingProfile|null $sharingProfile
-     * @param array|null $endorsements
+     * @param array|null $offers
      * @return Share
      */
     protected function buildShare(
         Share $share = null,
         BroadcasterAbstract $broadcaster = null,
         SharingProfile $sharingProfile = null,
-        array $endorsements = null
+        array $offers = null
     ) :Share {
         $share = (null === $share) ? new Share : $share;
 
@@ -270,8 +270,8 @@ abstract class BroadcastManagerAbstract
             $share->setSharingProfile($sharingProfile);
         }
 
-        if (null !== $endorsements) {
-            $share->setEndorsements($endorsements);
+        if (null !== $offers) {
+            $share->setOffers($offers);
         }
 
         if (null !== $sharingProfile) {
@@ -307,18 +307,18 @@ abstract class BroadcastManagerAbstract
      * @param SharingProfile $sharingProfile
      * @return array
      */
-    protected function getEndorsements(SharingProfile $sharingProfile, string $broadcaster)
+    protected function getOffers(SharingProfile $sharingProfile, string $broadcaster)
     {
         if (null !== $sharingProfile->getCompanyId()) {
-            return $this->getCompanyEndorsements($sharingProfile->getCompanyId(), $broadcaster);
+            return $this->getCompanyOffers($sharingProfile->getCompanyId(), $broadcaster);
         }
 
         if (null !== $sharingProfile->getBranchId()) {
-            return $this->getBranchEndorsements($sharingProfile->getBranchId(), $broadcaster);
+            return $this->getBranchOffers($sharingProfile->getBranchId(), $broadcaster);
         }
 
         if (null !== $sharingProfile->getUserId()) {
-            return $this->getUserEndorsements($sharingProfile->getUserId(), $broadcaster);
+            return $this->getUserOffers($sharingProfile->getUserId(), $broadcaster);
         }
 
         return [];
@@ -342,12 +342,12 @@ abstract class BroadcastManagerAbstract
     }
 
     /**
-     * @param EndorsementResponse $endorsementResponse
+     * @param OfferResponse $offerResponse
      * @return mixed|null
      */
-    public function getEndorsementComments(EndorsementResponse $endorsementResponse)
+    public function getOfferComments(OfferResponse $offerResponse)
     {
-        $answers = $endorsementResponse->getAnswers();
+        $answers = $offerResponse->getAnswers();
 
         foreach ($answers as $answer) {
             if ($answer instanceof CommentBoxAnswer &&
@@ -444,9 +444,9 @@ abstract class BroadcastManagerAbstract
      * @param int $id
      * @return array
      */
-    private function getUserEndorsements(int $id, string $broadcaster)
+    private function getUserOffers(int $id, string $broadcaster)
     {
-        $endorsements = [];
+        $offers = [];
         $user = $this->userRepo->find($id);
 
         if ($user) {
@@ -460,19 +460,19 @@ abstract class BroadcastManagerAbstract
                     $surveyIds[] = $survey->getId();
                 }
 
-                $endorsementRequests = $this->getEndorsementRequests($surveyIds);
+                $offerRequests = $this->getOfferRequests($surveyIds);
 
-                if ($endorsementRequests) {
-                    $endorsementRequestIds = [];
+                if ($offerRequests) {
+                    $offerRequestIds = [];
 
-                    /** @var EndorsementRequest $endorsementRequest */
-                    foreach ($endorsementRequests as $endorsementRequest) {
-                        $endorsementRequestIds[] = $endorsementRequest->getId();
+                    /** @var OfferRequest $offerRequest */
+                    foreach ($offerRequests as $offerRequest) {
+                        $offerRequestIds[] = $offerRequest->getId();
                     }
 
-                    $endorsementResponse = $this->dm->getRepository('AppBundle:EndorsementResponse')
+                    $offerResponse = $this->dm->getRepository('AppBundle:OfferResponse')
                         ->createQueryBuilder()
-                        ->field('endorsement_request.id')->in($endorsementRequestIds)
+                        ->field('offer_request.id')->in($offerRequestIds)
                         ->field('can_share')->equals(true)
                         ->field('status')->equals('active')
                         ->field('rating')->gte($this->minimumRating)
@@ -482,23 +482,23 @@ abstract class BroadcastManagerAbstract
                         ->getQuery()
                         ->getSingleResult();
 
-                    if ($endorsementResponse) {
-                        $endorsements[] = $endorsementResponse;
+                    if ($offerResponse) {
+                        $offers[] = $offerResponse;
                     }
                 }
             }
         }
 
-        return $endorsements;
+        return $offers;
     }
 
     /**
      * @param int $id
      * @return array
      */
-    private function getBranchEndorsements(int $id, string $broadcaster)
+    private function getBranchOffers(int $id, string $broadcaster)
     {
-        $endorsements = [];
+        $offers = [];
         $branch = $this->branchRepo->find($id);
 
         if ($branch) {
@@ -512,19 +512,19 @@ abstract class BroadcastManagerAbstract
                     $surveyIds[] = $survey->getId();
                 }
 
-                $endorsementRequests = $this->getEndorsementRequests($surveyIds);
+                $offerRequests = $this->getOfferRequests($surveyIds);
 
-                if ($endorsementRequests) {
-                    $endorsementRequestIds = [];
+                if ($offerRequests) {
+                    $offerRequestIds = [];
 
-                    /** @var EndorsementRequest $endorsementRequest */
-                    foreach ($endorsementRequests as $endorsementRequest) {
-                        $endorsementRequestIds[] = $endorsementRequest->getId();
+                    /** @var OfferRequest $offerRequest */
+                    foreach ($offerRequests as $offerRequest) {
+                        $offerRequestIds[] = $offerRequest->getId();
                     }
 
-                    $endorsementResponse = $this->dm->getRepository('AppBundle:EndorsementResponse')
+                    $offerResponse = $this->dm->getRepository('AppBundle:OfferResponse')
                         ->createQueryBuilder()
-                        ->field('endorsement_request.id')->in($endorsementRequestIds)
+                        ->field('offer_request.id')->in($offerRequestIds)
                         ->field('can_share')->equals(true)
                         ->field('status')->equals('active')
                         ->field('rating')->gte($this->minimumRating)
@@ -534,23 +534,23 @@ abstract class BroadcastManagerAbstract
                         ->getQuery()
                         ->getSingleResult();
 
-                    if ($endorsementResponse) {
-                        $endorsements[] = $endorsementResponse;
+                    if ($offerResponse) {
+                        $offers[] = $offerResponse;
                     }
                 }
             }
         }
 
-        return $endorsements;
+        return $offers;
     }
 
     /**
      * @param int $id
      * @return array
      */
-    private function getCompanyEndorsements(int $id, string $broadcaster)
+    private function getCompanyOffers(int $id, string $broadcaster)
     {
-        $endorsements = [];
+        $offers = [];
         $company = $this->companyRepo->find($id);
 
         if ($company) {
@@ -564,19 +564,19 @@ abstract class BroadcastManagerAbstract
                     $surveyIds[] = $survey->getId();
                 }
 
-                $endorsementRequests = $this->getEndorsementRequests($surveyIds);
+                $offerRequests = $this->getOfferRequests($surveyIds);
 
-                if ($endorsementRequests) {
-                    $endorsementRequestIds = [];
+                if ($offerRequests) {
+                    $offerRequestIds = [];
 
-                    /** @var EndorsementRequest $endorsementRequest */
-                    foreach ($endorsementRequests as $endorsementRequest) {
-                        $endorsementRequestIds[] = $endorsementRequest->getId();
+                    /** @var OfferRequest $offerRequest */
+                    foreach ($offerRequests as $offerRequest) {
+                        $offerRequestIds[] = $offerRequest->getId();
                     }
 
-                    $endorsementResponse = $this->dm->getRepository('AppBundle:EndorsementResponse')
+                    $offerResponse = $this->dm->getRepository('AppBundle:OfferResponse')
                         ->createQueryBuilder()
-                        ->field('endorsement_request.id')->in($endorsementRequestIds)
+                        ->field('offer_request.id')->in($offerRequestIds)
                         ->field('can_share')->equals(true)
                         ->field('status')->equals('active')
                         ->field('rating')->gte($this->minimumRating)
@@ -586,23 +586,23 @@ abstract class BroadcastManagerAbstract
                         ->getQuery()
                         ->getSingleResult();
 
-                    if ($endorsementResponse) {
-                        $endorsements[] = $endorsementResponse;
+                    if ($offerResponse) {
+                        $offers[] = $offerResponse;
                     }
                 }
             }
         }
 
-        return $endorsements;
+        return $offers;
     }
 
     /**
      * @param array $surveyIds
      * @return mixed
      */
-    private function getEndorsementRequests(array $surveyIds)
+    private function getOfferRequests(array $surveyIds)
     {
-        return $this->dm->getRepository('AppBundle:EndorsementRequest')
+        return $this->dm->getRepository('AppBundle:OfferRequest')
             ->createQueryBuilder()
             ->field('survey_id')->in($surveyIds)
             ->getQuery()

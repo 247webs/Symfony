@@ -39,7 +39,7 @@ RUN apt-get update \
 RUN wget -O - https://download.newrelic.com/548C16BF.gpg | apt-key add - \
     && echo "deb http://apt.newrelic.com/debian/ newrelic non-free" > /etc/apt/sources.list.d/newrelic.list \
     && apt-get update \
-    && echo newrelic-php5 newrelic-php5/application-name string "api.eendorsements.com" | debconf-set-selections \
+    && echo newrelic-php5 newrelic-php5/application-name string "api.eoffers.com" | debconf-set-selections \
     && echo newrelic-php5 newrelic-php5/license-key string "a3e4b57556ffd8da9ac92b3005ac0f1ad43e684f" | debconf-set-selections \
     && apt-get install -yq newrelic-php5
 

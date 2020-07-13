@@ -12,7 +12,7 @@ class OpendentalImportContactsCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('eendorsements:opendentalcontacts')
+            ->setName('eoffers:opendentalcontacts')
             ->setDescription('Import contacts from Opendental');
     }
 
@@ -52,9 +52,9 @@ class OpendentalImportContactsCommand extends ContainerAwareCommand
                         }
 
                         if ($patientId && $practitionerId) {
-                            $endorsementPractitioner = $opendentalService->getEndorsementPractitioner($opendentalApikey, $practitionerId);
-                            if ($endorsementPractitioner) {
-                                $user = $endorsementPractitioner->getUser();
+                            $offerPractitioner = $opendentalService->getOfferPractitioner($opendentalApikey, $practitionerId);
+                            if ($offerPractitioner) {
+                                $user = $offerPractitioner->getUser();
                                 $patient = $opendentalService->getPatient($opendentalApikey, $patientId);
                                 $patientContactInfo = $this->parseContactInfo($patient);
                                 if ($patientContactInfo) {

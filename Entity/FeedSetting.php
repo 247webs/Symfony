@@ -147,7 +147,7 @@ class FeedSetting
      *     max="20"
      * )
      */
-    private $endorsement_source_color;
+    private $offer_source_color;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"default": null})
@@ -157,7 +157,7 @@ class FeedSetting
      *     max="20"
      * )
      */
-    private $endorsement_text_color;
+    private $offer_text_color;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"default": null})
@@ -167,7 +167,7 @@ class FeedSetting
      *     max="20"
      * )
      */
-    private $endorsement_reply_color;
+    private $offer_reply_color;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"default": null})
@@ -177,7 +177,7 @@ class FeedSetting
      *     max="20"
      * )
      */
-    private $endorsement_star_color;
+    private $offer_star_color;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"default": null})
@@ -378,75 +378,75 @@ class FeedSetting
     }
 
     /**
-     * Set endorsementSourceColor
+     * Set offerSourceColor
      *
-     * @param string $endorsementSourceColor
+     * @param string $offerSourceColor
      *
      * @return FeedSetting
      */
-    public function setEndorsementSourceColor($endorsementSourceColor)
+    public function setOfferSourceColor($offerSourceColor)
     {
-        $this->endorsement_source_color = $endorsementSourceColor;
+        $this->offer_source_color = $offerSourceColor;
 
         return $this;
     }
 
     /**
-     * Get endorsementSourceColor
+     * Get offerSourceColor
      *
      * @return string
      */
-    public function getEndorsementSourceColor()
+    public function getOfferSourceColor()
     {
-        return $this->endorsement_source_color;
+        return $this->offer_source_color;
     }
 
     /**
-     * Set endorsementTextColor
+     * Set offerTextColor
      *
-     * @param string $endorsementTextColor
+     * @param string $offerTextColor
      *
      * @return FeedSetting
      */
-    public function setEndorsementTextColor($endorsementTextColor)
+    public function setOfferTextColor($offerTextColor)
     {
-        $this->endorsement_text_color = $endorsementTextColor;
+        $this->offer_text_color = $offerTextColor;
 
         return $this;
     }
 
     /**
-     * Get endorsementTextColor
+     * Get offerTextColor
      *
      * @return string
      */
-    public function getEndorsementTextColor()
+    public function getOfferTextColor()
     {
-        return $this->endorsement_text_color;
+        return $this->offer_text_color;
     }
 
     /**
-     * Set endorsementStarColor
+     * Set offerStarColor
      *
-     * @param string $endorsementStarColor
+     * @param string $offerStarColor
      *
      * @return FeedSetting
      */
-    public function setEndorsementStarColor($endorsementStarColor)
+    public function setOfferStarColor($offerStarColor)
     {
-        $this->endorsement_star_color = $endorsementStarColor;
+        $this->offer_star_color = $offerStarColor;
 
         return $this;
     }
 
     /**
-     * Get endorsementStarColor
+     * Get offerStarColor
      *
      * @return string
      */
-    public function getEndorsementStarColor()
+    public function getOfferStarColor()
     {
-        return $this->endorsement_star_color;
+        return $this->offer_star_color;
     }
 
     /**
@@ -594,26 +594,26 @@ class FeedSetting
     }
 
     /**
-     * Set endorsementReplyColor.
+     * Set offerReplyColor.
      *
-     * @param string|null $endorsementReplyColor
+     * @param string|null $offerReplyColor
      *
      * @return FeedSetting
      */
-    public function setEndorsementReplyColor($endorsementReplyColor = null)
+    public function setOfferReplyColor($offerReplyColor = null)
     {
-        $this->endorsement_reply_color = $endorsementReplyColor;
+        $this->offer_reply_color = $offerReplyColor;
 
         return $this;
     }
 
     /**
-     * Get endorsementReplyColor.
+     * Get offerReplyColor.
      *
      * @return string|null
      */
-    public function getEndorsementReplyColor()
+    public function getOfferReplyColor()
     {
-        return $this->endorsement_reply_color;
+        return $this->offer_reply_color;
     }
 }

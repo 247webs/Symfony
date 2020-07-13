@@ -326,7 +326,7 @@ class MindbodyService
      * @param int $staffId
      * @return MindbodyStaff
      */
-    public function getEndorsementStaff(MindbodyToken $mindbodyToken, int $staffId)
+    public function getOfferStaff(MindbodyToken $mindbodyToken, int $staffId)
     {
         return $this->em->getRepository(MindbodyStaff::class)
             ->findOneBy(['mindbodyToken' => $mindbodyToken->getId(), 'mindbodyStaffId' => $staffId]);

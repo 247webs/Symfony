@@ -2,9 +2,9 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Document\EndorsementRequest;
-use AppBundle\Document\EndorsementResponse;
-use AppBundle\Document\Statistic\EndorsementResponseReceived;
+use AppBundle\Document\OfferRequest;
+use AppBundle\Document\OfferResponse;
+use AppBundle\Document\Statistic\OfferResponseReceived;
 use AppBundle\Entity\QuestionType\MultipleChoice;
 use AppBundle\Entity\SurveyQuestion;
 use AppBundle\Entity\User;
@@ -207,15 +207,15 @@ class SurveyController extends FOSRestController
                 $averageScore = $this->get('statistic_service')->calculateAverageScoreByUser($user);
                 $averageScore = number_format((($averageScore * 100) / 20), 1);
                 $feedbackLink = $this->get('survey_service')->getFeedbackLink($survey, null);
-                $endorsementsReceived = $this->get('statistic_service')
-                    ->countUserStats($user, EndorsementResponseReceived::class);
+                $offersReceived = $this->get('statistic_service')
+                    ->countUserStats($user, OfferResponseReceived::class);
 
                 // Email Body
-                $body = $this->render(':Email:endorsement_request_review_push.html.twig', [
+                $body = $this->render(':Email:offer_request_review_push.html.twig', [
                     'survey' => $survey,
                     'surveyLink' => $surveyLink,
                     'feedbackLink' => $feedbackLink,
-                    'endorsementsReceived' => $endorsementsReceived,
+                    'offersReceived' => $offersReceived,
                     'averageScore' => $averageScore
                 ]);
                 break;
@@ -223,20 +223,20 @@ class SurveyController extends FOSRestController
                 $user = $survey->getUser();
                 $averageScore = $this->get('statistic_service')->calculateAverageScoreByUser($user);
                 $averageScore = number_format((($averageScore * 100) / 20), 1);
-                $endorsementsReceived = $this->get('statistic_service')
-                    ->countUserStats($user, EndorsementResponseReceived::class);
+                $offersReceived = $this->get('statistic_service')
+                    ->countUserStats($user, OfferResponseReceived::class);
 
                 // Email Body
-                $body = $this->render(':Email:endorsement_request_videomonial.html.twig', [
+                $body = $this->render(':Email:offer_request_videomonial.html.twig', [
                     'survey' => $survey,
                     'surveyLink' => $surveyLink,
-                    'endorsementsReceived' => $endorsementsReceived,
+                    'offersReceived' => $offersReceived,
                     'averageScore' => $averageScore
                 ]);
                 break;
             default:
                 // Email Body
-                $body = $this->render(':Email:endorsement_request.html.twig', [
+                $body = $this->render(':Email:offer_request.html.twig', [
                     'survey' => $survey,
                     'previewMode' => true,
                     'surveyLink' => $surveyLink
@@ -389,10 +389,10 @@ class SurveyController extends FOSRestController
      *     }
      * )
      */
-    public function hasEndorsementResponses(Survey $survey)
+    public function hasOfferResponses(Survey $survey)
     {
-        $endorsementResponses = $this->get('survey_service')->getEndorsementResponsesBySurvey($survey);
+        $offerResponses = $this->get('survey_service')->getOfferResponsesBySurvey($survey);
 
-        return $this->view(['has_responses' => (count($endorsementResponses)) ? true : false], Response::HTTP_OK);
+        return $this->view(['has_responses' => (count($offerResponses)) ? true : false], Response::HTTP_OK);
     }
 }

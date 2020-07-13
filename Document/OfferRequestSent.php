@@ -6,11 +6,11 @@ use AppBundle\Utilities\ConstructorArgs;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
- * Class EndorsementRequestSent
+ * Class OfferRequestSent
  * @package AppBundle\Document\Statistic
- * @ODM\Document(repositoryClass="AppBundle\Repository\Statistic\EndorsementRequestSentRepository")
+ * @ODM\Document(repositoryClass="AppBundle\Repository\Statistic\OfferRequestSentRepository")
  */
-class EndorsementRequestSent implements StatisticInterface
+class OfferRequestSent implements StatisticInterface
 {
     use ConstructorArgs;
 

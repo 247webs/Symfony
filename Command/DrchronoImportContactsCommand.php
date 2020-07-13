@@ -12,7 +12,7 @@ class DrchronoImportContactsCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('eendorsements:importdrchronocontacts')
+            ->setName('eoffers:importdrchronocontacts')
             ->setDescription('Import contacts from Drchrono');
     }
 
@@ -42,17 +42,17 @@ class DrchronoImportContactsCommand extends ContainerAwareCommand
                         $doctorId = $appointment['doctor'];
                         $patientId = $appointment['patient'];
 
-                        // If Drchrono Doctor is synced with the endorsement users
-                        $endorsementDoctor = $drchronoService->getEndorsementDoctor($drchronoPractice, $doctorId);
-                        if ($endorsementDoctor) {
-                            $user = $endorsementDoctor->getUser();
+                        // If Drchrono Doctor is synced with the offer users
+                        $offerDoctor = $drchronoService->getOfferDoctor($drchronoPractice, $doctorId);
+                        if ($offerDoctor) {
+                            $user = $offerDoctor->getUser();
 
                             // Retrieve patient details
                             $patient = $drchronoService->getPatient($drchronoPractice, $patientId);
                             $patient = $this->parsePatientInfo($patient);
 
                             if ($patient) {
-                                // Add patient as endorsement contact
+                                // Add patient as offer contact
                                 $contactService->createContactFromDrchronoAccount(
                                     $patient,
                                     $user

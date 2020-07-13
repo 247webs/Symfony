@@ -34,7 +34,7 @@ class UserProfileRedirectCommand extends ContainerAwareCommand
         foreach ($users as $user) {
             fwrite(
                 $file,
-                "Redirect 301 /" . $user->getSlug() . " https://eendorsements.com/user/" . $user->getSlug() . "\n"
+                "Redirect 301 /" . $user->getSlug() . " https://eoffers.com/user/" . $user->getSlug() . "\n"
             );
         }
 

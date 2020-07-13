@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Document\EndorsementResponse;
+use AppBundle\Document\OfferResponse;
 use AppBundle\Entity\Branch;
 use AppBundle\Entity\Company;
 use AppBundle\Entity\CompanySettings;
@@ -39,9 +39,9 @@ class FacebookOpengraphProfileController extends Controller
 
         $data->banner = $this->getSocialMediaBanner($user);
 
-        $data->description = $this->getDescription($request->query->get('endorsement'), $data->profile);
+        $data->description = $this->getDescription($request->query->get('offer'), $data->profile);
 
-        $data->title = $this->getTitle($request->query->get('endorsement'), $data->profile);
+        $data->title = $this->getTitle($request->query->get('offer'), $data->profile);
 
         return $this->render('profileTemplate.html.twig', [ 'data' => $data ]);
     }
@@ -199,21 +199,21 @@ class FacebookOpengraphProfileController extends Controller
     }
 
     /**
-     * @param string|null $endorsementResponseId
+     * @param string|null $offerResponseId
      * @param array $profile
      * @return mixed|null|string
      */
-    private function getDescription(string $endorsementResponseId = null, array $profile)
+    private function getDescription(string $offerResponseId = null, array $profile)
     {
-        if (null !== $endorsementResponseId) {
-            /** @var EndorsementResponse $endorsementResponse */
-            $endorsementResponse = $this->get('doctrine.odm.mongodb.document_manager')
-                ->getRepository(EndorsementResponse::class)
-                ->find($endorsementResponseId);
+        if (null !== $offerResponseId) {
+            /** @var OfferResponse $offerResponse */
+            $offerResponse = $this->get('doctrine.odm.mongodb.document_manager')
+                ->getRepository(OfferResponse::class)
+                ->find($offerResponseId);
 
-            if ($endorsementResponse) {
-                $comments = $this->get('endorsement_response_service')
-                    ->getPublicEndorsementComment($endorsementResponse);
+            if ($offerResponse) {
+                $comments = $this->get('offer_response_service')
+                    ->getPublicOfferComment($offerResponse);
 
                 if ($comments) {
                     return $comments;
@@ -224,31 +224,31 @@ class FacebookOpengraphProfileController extends Controller
 
         return (null !== $profile['description']) ?
             $profile['description'] :
-            'See reviews and learn more about ' . $profile['name'] . ' at eEndorsements.com';
+            'See reviews and learn more about ' . $profile['name'] . ' at eOffers.com';
     }
 
     /**
-     * @param string|null $endorsementResponseId
+     * @param string|null $offerResponseId
      * @param array $profile
      * @return string
      */
-    private function getTitle(string $endorsementResponseId = null, array $profile)
+    private function getTitle(string $offerResponseId = null, array $profile)
     {
-        if (null !== $endorsementResponseId) {
-            /** @var EndorsementResponse $endorsementResponse */
-            $endorsementResponse = $this->get('doctrine.odm.mongodb.document_manager')
-                ->getRepository(EndorsementResponse::class)
-                ->find($endorsementResponseId);
+        if (null !== $offerResponseId) {
+            /** @var OfferResponse $offerResponse */
+            $offerResponse = $this->get('doctrine.odm.mongodb.document_manager')
+                ->getRepository(OfferResponse::class)
+                ->find($offerResponseId);
 
-            if ($endorsementResponse) {
+            if ($offerResponse) {
                 return
-                    $endorsementResponse->getFirstName() . ' ' .
-                    substr($endorsementResponse->getLastName(), 0, 1) . ' in ' .
-                    $endorsementResponse->getCity() . ', ' .
-                    $endorsementResponse->getState() . ' says:';
+                    $offerResponse->getFirstName() . ' ' .
+                    substr($offerResponse->getLastName(), 0, 1) . ' in ' .
+                    $offerResponse->getCity() . ', ' .
+                    $offerResponse->getState() . ' says:';
             }
         }
 
-        return $profile['name'] . ' received an endorsement:';
+        return $profile['name'] . ' received an offer:';
     }
 }

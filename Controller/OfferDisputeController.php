@@ -2,8 +2,8 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Document\EndorsementDispute;
-use AppBundle\Document\EndorsementResponse;
+use AppBundle\Document\OfferDispute;
+use AppBundle\Document\OfferResponse;
 use AppBundle\Entity\Survey;
 use AppBundle\Entity\User;
 use AppBundle\Exception\ApiProblemException;
@@ -18,15 +18,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-/** @Route("/endorsement-dispute") */
-class EndorsementDisputeController extends FOSRestController
+/** @Route("/offer-dispute") */
+class OfferDisputeController extends FOSRestController
 {
     /**
-     * @Rest\Get(path="/{id}", name="endorsement_dispute_get")
+     * @Rest\Get(path="/{id}", name="offer_dispute_get")
      *
      * @Doc\ApiDoc(
-     *      section="Endorsement Dispute",
-     *      description="Get an endorsement dispute",
+     *      section="Offer Dispute",
+     *      description="Get an offer dispute",
      *      https="true",
      *      statusCodes={
      *         200="Success",
@@ -35,7 +35,7 @@ class EndorsementDisputeController extends FOSRestController
      *     }
      * )
      */
-    public function getAction(EndorsementDispute $id)
+    public function getAction(OfferDispute $id)
     {
         $this->denyAccessUnlessGranted('view', $id);
 
@@ -43,21 +43,21 @@ class EndorsementDisputeController extends FOSRestController
     }
 
     /**
-     * @Rest\Put(path="/{id}", name="endorsement_dispute_put")
+     * @Rest\Put(path="/{id}", name="offer_dispute_put")
      *
      * @ParamConverter(
-     *      "endorsementDispute",
+     *      "offerDispute",
      *      converter="fos_rest.request_body",
      *      options={
      *          "validator"={
-     *              "groups"="endorsement_dispute_put"
+     *              "groups"="offer_dispute_put"
      *          }
      *      }
      * )
      *
      * @Doc\ApiDoc(
-     *      section="Endorsement Dispute",
-     *      description="Modify an endorsement dispute",
+     *      section="Offer Dispute",
+     *      description="Modify an offer dispute",
      *      https="true",
      *      statusCodes={
      *         200="Success",
@@ -66,8 +66,8 @@ class EndorsementDisputeController extends FOSRestController
      * )
      */
     public function putAction(
-        EndorsementDispute $id,
-        EndorsementDispute $endorsementDispute,
+        OfferDispute $id,
+        OfferDispute $offerDispute,
         ConstraintViolationListInterface $violations
     ) {
         $this->denyAccessUnlessGranted('edit', $id);
@@ -80,27 +80,27 @@ class EndorsementDisputeController extends FOSRestController
         }
 
         return $this->view(
-            $this->get('endorsement_dispute_service')->update($id, $endorsementDispute),
+            $this->get('offer_dispute_service')->update($id, $offerDispute),
             Response::HTTP_OK
         );
     }
 
     /**
-     * @Rest\Post(path="", name="endorsement_dispute_post")
+     * @Rest\Post(path="", name="offer_dispute_post")
      *
      * @ParamConverter(
-     *      "endorsementDispute",
+     *      "offerDispute",
      *      converter="fos_rest.request_body",
      *      options={
      *          "validator"={
-     *              "groups"="endorsement_dispute_post"
+     *              "groups"="offer_dispute_post"
      *          }
      *      }
      * )
      *
      * @Doc\ApiDoc(
-     *      section="Endorsement Dispute",
-     *      description="Create an endorsement dispute",
+     *      section="Offer Dispute",
+     *      description="Create an offer dispute",
      *      https="true",
      *      statusCodes={
      *         201="Success",
@@ -108,9 +108,9 @@ class EndorsementDisputeController extends FOSRestController
      *     }
      * )
      */
-    public function postAction(EndorsementDispute $endorsementDispute, ConstraintViolationListInterface $violations)
+    public function postAction(OfferDispute $offerDispute, ConstraintViolationListInterface $violations)
     {
-        $this->denyAccessUnlessGranted('edit', $endorsementDispute);
+        $this->denyAccessUnlessGranted('edit', $offerDispute);
 
         // Validate the request body
         if (count($violations)) {
@@ -119,14 +119,14 @@ class EndorsementDisputeController extends FOSRestController
             );
         }
 
-        $endorsementDisputeService = $this->get('endorsement_dispute_service');
+        $offerDisputeService = $this->get('offer_dispute_service');
 
         // Create the dispute
-        $created = $endorsementDisputeService->create($endorsementDispute);
+        $created = $offerDisputeService->create($offerDispute);
 
         // Notify admin
-        $this->get('mailer')->sendEndorsementDisputeToAdmin(
-            $endorsementDisputeService->getAdminDisputeUri($created),
+        $this->get('mailer')->sendOfferDisputeToAdmin(
+            $offerDisputeService->getAdminDisputeUri($created),
             $this->getParameter('admin_email')
         );
 
@@ -134,21 +134,21 @@ class EndorsementDisputeController extends FOSRestController
     }
 
     /**
-     * @Rest\Put(path="/{id}/put-status", name="endorsement_dispute_status")
+     * @Rest\Put(path="/{id}/put-status", name="offer_dispute_status")
      *
      * @ParamConverter(
-     *      "endorsementDispute",
+     *      "offerDispute",
      *      converter="fos_rest.request_body",
      *      options={
      *          "validator"={
-     *              "groups"="endorsement_dispute_status"
+     *              "groups"="offer_dispute_status"
      *          }
      *      }
      * )
      *
      * @Doc\ApiDoc(
-     *      section="Endorsement Dispute",
-     *      description="Set status to Endorsement dispute",
+     *      section="Offer Dispute",
+     *      description="Set status to Offer dispute",
      *      https="true",
      *      statusCodes={
      *         201="Success",
@@ -158,8 +158,8 @@ class EndorsementDisputeController extends FOSRestController
      *
      */
     public function putStatus(
-        EndorsementDispute $id,
-        EndorsementDispute $endorsementDispute,
+        OfferDispute $id,
+        OfferDispute $offerDispute,
         ConstraintViolationListInterface $violations
     ) {
         if (count($violations)) {
@@ -168,15 +168,15 @@ class EndorsementDisputeController extends FOSRestController
             );
         }
 
-        /** @var EndorsementDispute $updated */
-        $updated = $this->get('endorsement_dispute_service')->setStatus($id, $endorsementDispute);
+        /** @var OfferDispute $updated */
+        $updated = $this->get('offer_dispute_service')->setStatus($id, $offerDispute);
 
-        /** @var EndorsementResponse $endorsementResponse */
-        $endorsementResponse = $updated->getEndorsementResponse();
+        /** @var OfferResponse $offerResponse */
+        $offerResponse = $updated->getOfferResponse();
 
         /** @var Survey $survey */
         $survey = $this->getDoctrine()->getRepository(Survey::class)->find(
-            $endorsementResponse->getEndorsementRequest()->getSurveyId()
+            $offerResponse->getOfferRequest()->getSurveyId()
         );
 
         /** @var User $user */
@@ -184,7 +184,7 @@ class EndorsementDisputeController extends FOSRestController
 
         /** Set a new background job to calculate average rating of all the profiles of survey user */
         $em = $this->getDoctrine()->getManager();
-        $job = new Job('eendorsements:averageRating', array($user->getId()));
+        $job = new Job('eoffers:averageRating', array($user->getId()));
         $em->persist($job);
         $em->flush($job);
 
@@ -199,11 +199,11 @@ class EndorsementDisputeController extends FOSRestController
         ];
 
         // Update the dispute owner(s)
-        $this->get('mailer')->sendEndorsementDisputeUpdate(
+        $this->get('mailer')->sendOfferDisputeUpdate(
             $updated,
             $survey,
             array_unique($to),
-            $this->get('endorsement_response_service')->formatEndorsementResponseForEMail($endorsementResponse)
+            $this->get('offer_response_service')->formatOfferResponseForEMail($offerResponse)
         );
 
         return $this->view($updated, Response::HTTP_OK);

@@ -36,7 +36,7 @@ class SlugMigrator
                 $newSlug = $newSlug . '-duplicate-' . md5(uniqid());
             }
 
-            $redirect = 'Redirect 301 /user/' . $user->getSlug() . ' https://eendorsements.com/user/' . $newSlug;
+            $redirect = 'Redirect 301 /user/' . $user->getSlug() . ' https://eoffers.com/user/' . $newSlug;
 
             $user->setSlug($newSlug);
             $this->em->persist($user);

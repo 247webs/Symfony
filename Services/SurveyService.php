@@ -2,8 +2,8 @@
 
 namespace AppBundle\Services;
 
-use AppBundle\Document\EndorsementRequest;
-use AppBundle\Document\EndorsementResponse;
+use AppBundle\Document\OfferRequest;
+use AppBundle\Document\OfferResponse;
 use AppBundle\Document\Sharing\VerificationNoticePriority;
 use AppBundle\Entity\Branch;
 use AppBundle\Entity\Company;
@@ -360,76 +360,76 @@ class SurveyService
      * @param Survey $survey
      * @return mixed|null
      */
-    public function getEndorsementResponsesBySurvey(Survey $survey)
+    public function getOfferResponsesBySurvey(Survey $survey)
     {
-        $endorsementRequestRepo = $this->dm->getRepository(EndorsementRequest::class);
-        $endorsementResponseRepo = $this->dm->getRepository(EndorsementResponse::class);
+        $offerRequestRepo = $this->dm->getRepository(OfferRequest::class);
+        $offerResponseRepo = $this->dm->getRepository(OfferResponse::class);
 
-        $endorsementRequests = $endorsementRequestRepo->getEndorsementRequestsBySurvey($survey);
+        $offerRequests = $offerRequestRepo->getOfferRequestsBySurvey($survey);
 
-        if (!count($endorsementRequests)) {
+        if (!count($offerRequests)) {
             return null;
         }
 
-        /** @var array $endorsementRequestIds */
-        $endorsementRequestIds = [];
+        /** @var array $offerRequestIds */
+        $offerRequestIds = [];
 
-        /** @var EndorsementRequest $endorsementRequest */
-        foreach ($endorsementRequests as $endorsementRequest) {
-            $endorsementRequestIds[] = $endorsementRequest->getId();
+        /** @var OfferRequest $offerRequest */
+        foreach ($offerRequests as $offerRequest) {
+            $offerRequestIds[] = $offerRequest->getId();
         }
 
-        return $endorsementResponseRepo->getEndorsementsByRequestIds($endorsementRequestIds);
+        return $offerResponseRepo->getOffersByRequestIds($offerRequestIds);
     }
 
     /**
      * @param Survey $survey
-     * @param EndorsementRequest|null $endorsementRequest
+     * @param OfferRequest|null $offerRequest
      * @return string
      */
-    public function getSurveyLink(Survey $survey, EndorsementRequest $endorsementRequest = null)
+    public function getSurveyLink(Survey $survey, OfferRequest $offerRequest = null)
     {
         switch ($survey->getType()) {
             case Survey::SURVEY_TYPE_REVIEW_PUSH:
                 return $this->getReviewPushSurveyLink($survey);
             case Survey::SURVEY_TYPE_VIDEOMONIAL:
-                return $this->getVideomonialSurveyLink($survey, $endorsementRequest);
+                return $this->getVideomonialSurveyLink($survey, $offerRequest);
             default:
-                return $this->getNonReviewPushSurveyLink($survey, $endorsementRequest);
+                return $this->getNonReviewPushSurveyLink($survey, $offerRequest);
         }
     }
 
     /**
      * @param Survey $survey
-     * @param EndorsementRequest|null $endorsementRequest
+     * @param OfferRequest|null $offerRequest
      * @return string
      */
-    public function getFeedbackLink(Survey $survey, EndorsementRequest $endorsementRequest = null)
+    public function getFeedbackLink(Survey $survey, OfferRequest $offerRequest = null)
     {
         $link = $this->frontEndUiUrl . $this->frontEndFeedbackUri . '/' . base64_encode($survey->getId());
 
-        if (null !== $endorsementRequest) {
-            $link .= '?endorsement_request=' . base64_encode($endorsementRequest->getId()) . '&';
-            $link .= 'email=' . base64_encode($endorsementRequest->getRecipientEmail()) . '&';
+        if (null !== $offerRequest) {
+            $link .= '?offer_request=' . base64_encode($offerRequest->getId()) . '&';
+            $link .= 'email=' . base64_encode($offerRequest->getRecipientEmail()) . '&';
 
-            if (null !== $endorsementRequest->getRecipientFirstName()) {
-                $link .= 'first=' . base64_encode($endorsementRequest->getRecipientFirstName()) . '&';
+            if (null !== $offerRequest->getRecipientFirstName()) {
+                $link .= 'first=' . base64_encode($offerRequest->getRecipientFirstName()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientLastName()) {
-                $link .= 'last=' . base64_encode($endorsementRequest->getRecipientLastName()) . '&';
+            if (null !== $offerRequest->getRecipientLastName()) {
+                $link .= 'last=' . base64_encode($offerRequest->getRecipientLastName()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientCity()) {
-                $link .= 'city=' . base64_encode($endorsementRequest->getRecipientCity()) . '&';
+            if (null !== $offerRequest->getRecipientCity()) {
+                $link .= 'city=' . base64_encode($offerRequest->getRecipientCity()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientState()) {
-                $link .= 'state=' . base64_encode($endorsementRequest->getRecipientState()) . '&';
+            if (null !== $offerRequest->getRecipientState()) {
+                $link .= 'state=' . base64_encode($offerRequest->getRecipientState()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientLabel()) {
-                $link .= 'label=' . base64_encode($endorsementRequest->getRecipientLabel());
+            if (null !== $offerRequest->getRecipientLabel()) {
+                $link .= 'label=' . base64_encode($offerRequest->getRecipientLabel());
             }
         }
 
@@ -560,35 +560,35 @@ class SurveyService
 
     /**
      * @param Survey $survey
-     * @param EndorsementRequest|null $endorsementRequest
+     * @param OfferRequest|null $offerRequest
      * @return string
      */
-    private function getNonReviewPushSurveyLink(Survey $survey, EndorsementRequest $endorsementRequest = null)
+    private function getNonReviewPushSurveyLink(Survey $survey, OfferRequest $offerRequest = null)
     {
         $link = $this->frontEndUiUrl . $this->frontEndSurveyUri . '/' . base64_encode($survey->getId());
 
-        if (null !== $endorsementRequest) {
-            $link .= '?endorsement_request=' . base64_encode($endorsementRequest->getId()) . '&';
-            $link .= 'email=' . base64_encode($endorsementRequest->getRecipientEmail()) . '&';
+        if (null !== $offerRequest) {
+            $link .= '?offer_request=' . base64_encode($offerRequest->getId()) . '&';
+            $link .= 'email=' . base64_encode($offerRequest->getRecipientEmail()) . '&';
 
-            if (null !== $endorsementRequest->getRecipientFirstName()) {
-                $link .= 'first=' . base64_encode($endorsementRequest->getRecipientFirstName()) . '&';
+            if (null !== $offerRequest->getRecipientFirstName()) {
+                $link .= 'first=' . base64_encode($offerRequest->getRecipientFirstName()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientLastName()) {
-                $link .= 'last=' . base64_encode($endorsementRequest->getRecipientLastName()) . '&';
+            if (null !== $offerRequest->getRecipientLastName()) {
+                $link .= 'last=' . base64_encode($offerRequest->getRecipientLastName()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientCity()) {
-                $link .= 'city=' . base64_encode($endorsementRequest->getRecipientCity()) . '&';
+            if (null !== $offerRequest->getRecipientCity()) {
+                $link .= 'city=' . base64_encode($offerRequest->getRecipientCity()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientState()) {
-                $link .= 'state=' . base64_encode($endorsementRequest->getRecipientState()) . '&';
+            if (null !== $offerRequest->getRecipientState()) {
+                $link .= 'state=' . base64_encode($offerRequest->getRecipientState()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientLabel()) {
-                $link .= 'label=' . base64_encode($endorsementRequest->getRecipientLabel());
+            if (null !== $offerRequest->getRecipientLabel()) {
+                $link .= 'label=' . base64_encode($offerRequest->getRecipientLabel());
             }
         }
 
@@ -597,35 +597,35 @@ class SurveyService
     
     /**
      * @param Survey $survey
-     * @param EndorsementRequest|null $endorsementRequest
+     * @param OfferRequest|null $offerRequest
      * @return string
      */
-    private function getVideomonialSurveyLink(Survey $survey, EndorsementRequest $endorsementRequest = null)
+    private function getVideomonialSurveyLink(Survey $survey, OfferRequest $offerRequest = null)
     {
         $link = $this->frontEndUiUrl . $this->frontEndSurveyUri . '/' . base64_encode($survey->getId());
 
-        if (null !== $endorsementRequest) {
-            $link .= '?endorsement_request=' . base64_encode($endorsementRequest->getId()) . '&';
-            $link .= 'email=' . base64_encode($endorsementRequest->getRecipientEmail()) . '&';
+        if (null !== $offerRequest) {
+            $link .= '?offer_request=' . base64_encode($offerRequest->getId()) . '&';
+            $link .= 'email=' . base64_encode($offerRequest->getRecipientEmail()) . '&';
 
-            if (null !== $endorsementRequest->getRecipientFirstName()) {
-                $link .= 'first=' . base64_encode($endorsementRequest->getRecipientFirstName()) . '&';
+            if (null !== $offerRequest->getRecipientFirstName()) {
+                $link .= 'first=' . base64_encode($offerRequest->getRecipientFirstName()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientLastName()) {
-                $link .= 'last=' . base64_encode($endorsementRequest->getRecipientLastName()) . '&';
+            if (null !== $offerRequest->getRecipientLastName()) {
+                $link .= 'last=' . base64_encode($offerRequest->getRecipientLastName()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientCity()) {
-                $link .= 'city=' . base64_encode($endorsementRequest->getRecipientCity()) . '&';
+            if (null !== $offerRequest->getRecipientCity()) {
+                $link .= 'city=' . base64_encode($offerRequest->getRecipientCity()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientState()) {
-                $link .= 'state=' . base64_encode($endorsementRequest->getRecipientState()) . '&';
+            if (null !== $offerRequest->getRecipientState()) {
+                $link .= 'state=' . base64_encode($offerRequest->getRecipientState()) . '&';
             }
 
-            if (null !== $endorsementRequest->getRecipientLabel()) {
-                $link .= 'label=' . base64_encode($endorsementRequest->getRecipientLabel());
+            if (null !== $offerRequest->getRecipientLabel()) {
+                $link .= 'label=' . base64_encode($offerRequest->getRecipientLabel());
             }
         }
 

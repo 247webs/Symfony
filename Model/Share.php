@@ -13,7 +13,7 @@ class Share
     /**
      * @var array
      */
-    private $endorsements;
+    private $offers;
 
     /**
      * @var BroadcasterAbstract
@@ -91,17 +91,17 @@ class Share
     /**
      * @return array
      */
-    public function getEndorsements(): array
+    public function getOffers(): array
     {
-        return $this->endorsements;
+        return $this->offers;
     }
 
     /**
-     * @param array $endorsement
+     * @param array $offer
      */
-    public function setEndorsements(array $endorsements)
+    public function setOffers(array $offers)
     {
-        $this->endorsements = $endorsements;
+        $this->offers = $offers;
     }
 
 

@@ -12,7 +12,7 @@ class MindbodyImportContactsCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('eendorsements:importmindbodycontacts')
+            ->setName('eoffers:importmindbodycontacts')
             ->setDescription('Import contacts from Mindbody');
     }
 
@@ -61,9 +61,9 @@ class MindbodyImportContactsCommand extends ContainerAwareCommand
                             $clientId = $appointment['ClientId'];
 
                             if ($staffId && $clientId) {
-                                $endorsementStaff = $mindbodyService->getEndorsementStaff($mindbodyToken, $staffId);
-                                if ($endorsementStaff) {
-                                    $user = $endorsementStaff->getUser();
+                                $offerStaff = $mindbodyService->getOfferStaff($mindbodyToken, $staffId);
+                                if ($offerStaff) {
+                                    $user = $offerStaff->getUser();
                                     $client = $mindbodyService->getClient($mindbodyToken, $clientId); 
                                     $clientContactInfo = $this->parseContactInfo($client);
                                     if ($clientContactInfo && $clientContactInfo['email'] != null) {

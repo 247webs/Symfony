@@ -58,7 +58,7 @@ class RepReviewsUser
      * @var array
      * @Serializer\Type("array")
      */
-    private $endorsements;
+    private $offers;
 
     /**
      * @var string
@@ -197,17 +197,17 @@ class RepReviewsUser
     /**
      * @return array
      */
-    public function getEndorsements(): array
+    public function getOffers(): array
     {
-        return $this->endorsements;
+        return $this->offers;
     }
 
     /**
-     * @param array $endorsements
+     * @param array $offers
      */
-    public function setEndorsements(array $endorsements)
+    public function setOffers(array $offers)
     {
-        $this->endorsements = $endorsements;
+        $this->offers = $offers;
     }
 
     /**

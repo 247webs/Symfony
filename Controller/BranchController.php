@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Branch;
 use AppBundle\Exception\ApiProblemException;
 use AppBundle\Model\ApiProblem;
-use AppBundle\Representation\PublicEndorsements;
+use AppBundle\Representation\PublicOffers;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -48,7 +48,7 @@ class BranchController extends FOSRestController
     }
 
     /**
-     * @Rest\Get(path="/{branch}/endorsements", name="branch_endorsements_get")
+     * @Rest\Get(path="/{branch}/offers", name="branch_offers_get")
      *
      * @ParamConverter(
      *     "branch",
@@ -75,12 +75,12 @@ class BranchController extends FOSRestController
      *      name="videos_only",
      *      requirements="true|false",
      *      default="false",
-     *      description="Only return endorsements with videos"
+     *      description="Only return offers with videos"
      * )
      *
      * @Doc\ApiDoc(
      *      section="Branch",
-     *      description="Get branch endorsements",
+     *      description="Get branch offers",
      *      https="true",
      *      statusCodes={
      *         200="Success",
@@ -88,7 +88,7 @@ class BranchController extends FOSRestController
      *     }
      * )
      */
-    public function getEndorsementsAction(Branch $branch, ParamFetcherInterface $paramFetcher)
+    public function getOffersAction(Branch $branch, ParamFetcherInterface $paramFetcher)
     {
         ini_set('memory_limit', '1G'); // Boost the memory
         ini_set('max_execution_time', 0); // Allow unlimited execution time for companies only
@@ -107,25 +107,25 @@ class BranchController extends FOSRestController
         'true' == strtolower($paramFetcher->get('videos_only'))
             ? true : false;
 
-        $endorsements = $this->get('branch_service')->getBranchEndorsementFeed($branch, $videosOnly);
+        $offers = $this->get('branch_service')->getBranchOfferFeed($branch, $videosOnly);
 
-        if (!count($endorsements)) {
-            throw new NotFoundHttpException($branch->getName() . " does not have any endorsements to share yet");
+        if (!count($offers)) {
+            throw new NotFoundHttpException($branch->getName() . " does not have any offers to share yet");
         }
 
         $statService = $this->get('statistic_service');
 
-        return new PublicEndorsements(
+        return new PublicOffers(
             $statService->calculateAverageScoreByBranch($branch),
-            $endorsements,
-            $statService->countScorableEndorsementsByBranch($branch),
+            $offers,
+            $statService->countScorableOffersByBranch($branch),
             $page,
             $limit
         );
     }
 
     /**
-     * @Rest\Get(path="/{branch}/endorsements/summary", name="branch_endorsements_summary_get")
+     * @Rest\Get(path="/{branch}/offers/summary", name="branch_offers_summary_get")
      *
      * @ParamConverter(
      *     "branch",
@@ -136,7 +136,7 @@ class BranchController extends FOSRestController
      *
      * @Doc\ApiDoc(
      *      section="Branch",
-     *      description="Get branch endorsements summary",
+     *      description="Get branch offers summary",
      *      https="true",
      *      statusCodes={
      *         200="Success",
@@ -144,13 +144,13 @@ class BranchController extends FOSRestController
      *     }
      * )
      */
-    public function getEndorsementsSummaryAction(Branch $branch)
+    public function getOffersSummaryAction(Branch $branch)
     {
         $response = new \StdClass;
         $statService = $this->get('statistic_service');
 
 
-        $response->total_endorsements = $statService->countScorableEndorsementsByBranch($branch);
+        $response->total_offers = $statService->countScorableOffersByBranch($branch);
         $response->average_rating = $statService->calculateAverageScoreByBranch($branch);
 
         return $this->view((array) $response, Response::HTTP_OK);

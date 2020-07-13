@@ -57,9 +57,9 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
             }
         }
 
-        // Find endorsements for each share.
+        // Find offers for each share.
         if (count($shares)) {
-            $shares = $this->addEndorsementsToShares($shares, Broadcaster::FACEBOOK);
+            $shares = $this->addOffersToShares($shares, Broadcaster::FACEBOOK);
         }
 
         return $shares;
@@ -96,10 +96,10 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
 
     /**
      * @param Share $share
-     * @param EndorsementResponse $endorsement
+     * @param OfferResponse $offer
      * @return array
      */
-    public function getPostContent(Share $share, EndorsementResponse $endorsement)
+    public function getPostContent(Share $share, OfferResponse $offer)
     {
         $content = [];
         $url = $this->container->getParameter('ng');
@@ -110,28 +110,28 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
         /**
          * Deprecated message format due to Facebook API update 7.18.2017
          *
-         * $message = $endorsement->getFirstName() . " from " . $endorsement->getCity() . ', ' .
-         * $endorsement->getState() . ' endorsed %s';
+         * $message = $offer->getFirstName() . " from " . $offer->getCity() . ', ' .
+         * $offer->getState() . ' endorsed %s';
          */
 
         /** Commented out in favor of link content 9.9.2017  */
-//        $content['message'] =  number_format(($endorsement->getRating() * 100) / 20, 1)  .
-//            ' Star Review on eEndorsements';
+//        $content['message'] =  number_format(($offer->getRating() * 100) / 20, 1)  .
+//            ' Star Review on eOffers';
 //
-//        if (null !== $comments = $this->getEndorsementComments($endorsement)) {
+//        if (null !== $comments = $this->getOfferComments($offer)) {
 //            $content['message'] .= ' -- ' . $comments;
 //        }
 
         if (null !== $company) {
-            $content = $this->formatCompanyPostContent($content, $company, $url, $endorsement);
+            $content = $this->formatCompanyPostContent($content, $company, $url, $offer);
         }
 
         if (null !== $branch) {
-            $content = $this->formatBranchPostContent($content, $branch, $url, $endorsement);
+            $content = $this->formatBranchPostContent($content, $branch, $url, $offer);
         }
 
         if (null !== $user) {
-            $content = $this->formatUserPostContent($content, $user, $url, $endorsement);
+            $content = $this->formatUserPostContent($content, $user, $url, $offer);
         }
 
         return $content;
@@ -167,14 +167,14 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
         array $content,
         Company $company,
         string $url,
-        EndorsementResponse $endorsementResponse,
+        OfferResponse $offerResponse,
         ManualShare $manualShare = null
     ) :array {
 
         if ($manualShare && "video" === $manualShare->getSharingType()) {
-            $link = $url . '/company/' . $company->getSlug() . '?endorsement=' . $endorsementResponse->getId();
+            $link = $url . '/company/' . $company->getSlug() . '?offer=' . $offerResponse->getId();
 
-            $description = $this->getVideoDescription($endorsementResponse);
+            $description = $this->getVideoDescription($offerResponse);
 
             // Concatenate profile page url with the video description
             $description = $description . " " . $link;
@@ -186,7 +186,7 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
             ];
         } else {
             $content['link'] = $url . '/company/' . $company->getSlug() .
-                '?endorsement=' . $endorsementResponse->getId();
+                '?offer=' . $offerResponse->getId();
         }
 
         return $content;
@@ -202,14 +202,14 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
         array $content,
         Branch $branch,
         string $url,
-        EndorsementResponse $endorsementResponse,
+        OfferResponse $offerResponse,
         ManualShare $manualShare = null
     ) :array {
 
         if ($manualShare && "video" === $manualShare->getSharingType()) {
-            $link = $url . '/branch/' . $branch->getSlug() . '?endorsement=' . $endorsementResponse->getId();
+            $link = $url . '/branch/' . $branch->getSlug() . '?offer=' . $offerResponse->getId();
 
-            $description = $this->getVideoDescription($endorsementResponse);
+            $description = $this->getVideoDescription($offerResponse);
 
             // Concatenate profile page url with the video description
             $description = $description . " " . $link;
@@ -220,7 +220,7 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
                 "file_url" => $manualShare->getVideoUrl()
             ];
         } else {
-            $content['link'] = $url . '/branch/' . $branch->getSlug() . '?endorsement=' . $endorsementResponse->getId();
+            $content['link'] = $url . '/branch/' . $branch->getSlug() . '?offer=' . $offerResponse->getId();
         }
 
         return $content;
@@ -236,13 +236,13 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
         array $content,
         User $user,
         string $url,
-        EndorsementResponse $endorsementResponse,
+        OfferResponse $offerResponse,
         ManualShare $manualShare = null
     ) :array {
         if ($manualShare && "video" === $manualShare->getSharingType()) {
-            $link = $url . '/user/' . $user->getSlug() . '?endorsement=' . $endorsementResponse->getId();
+            $link = $url . '/user/' . $user->getSlug() . '?offer=' . $offerResponse->getId();
 
-            $description = $this->getVideoDescription($endorsementResponse);
+            $description = $this->getVideoDescription($offerResponse);
 
             // Concatenate profile page url with the video description
             $description = $description . " " . $link;
@@ -253,21 +253,21 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
                 "file_url" => $manualShare->getVideoUrl()
             ];
         } else {
-            $content['link'] =  $url . '/user/' . $user->getSlug() . '?endorsement=' . $endorsementResponse->getId();
+            $content['link'] =  $url . '/user/' . $user->getSlug() . '?offer=' . $offerResponse->getId();
         }
 
         return $content;
     }
 
     /**
-     * @param EndorsementResponse $endorsementResponse
+     * @param OfferResponse $offerResponse
      * @return string
      */
-    private function getVideoDescription(EndorsementResponse $endorsementResponse) :string
+    private function getVideoDescription(OfferResponse $offerResponse) :string
     {
-        $description = $endorsementResponse->getFirstName() . " " . substr($endorsementResponse->getLastName(), 0, 1) .
-            " in " . $endorsementResponse->getCity() . " " . $endorsementResponse->getState() .
-            " Says, " . $this->getEndorsementComments($endorsementResponse);
+        $description = $offerResponse->getFirstName() . " " . substr($offerResponse->getLastName(), 0, 1) .
+            " in " . $offerResponse->getCity() . " " . $offerResponse->getState() .
+            " Says, " . $this->getOfferComments($offerResponse);
 
         return $description;
     }
@@ -277,8 +277,8 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
      */
     private function shareAsPage(Share $share)
     {
-        foreach ($share->getEndorsements() as $endorsement) {
-            $content = $this->getPostContent($share, $endorsement);
+        foreach ($share->getOffers() as $offer) {
+            $content = $this->getPostContent($share, $offer);
 
             if (null !== $content['link']) {
                 /** @var FacebookBroadcaster $broadcaster */
@@ -292,7 +292,7 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
 
                 if (false !== $response) {
                     $this->recordShare(
-                        $endorsement,
+                        $offer,
                         $response['id'],
                         Broadcaster::FACEBOOK,
                         $this->getShareType($share)
@@ -307,18 +307,18 @@ class FacebookBroadcastManager extends BroadcastManagerAbstract implements Broad
      */
     private function shareAsPerson(Share $share)
     {
-        foreach ($share->getEndorsements() as $endorsement) {
-            $content = $this->getPostContent($share, $endorsement);
+        foreach ($share->getOffers() as $offer) {
+            $content = $this->getPostContent($share, $offer);
 
             if (null !== $content['link'] && null !== $share->getBroadcaster()->getToken()) {
                 $response = $this->container->get('facebook_service')->postAsUser(
                     $share->getBroadcaster()->getToken(),
-                    $this->getPostContent($share, $endorsement)
+                    $this->getPostContent($share, $offer)
                 );
 
                 if (false !== $response) {
                     $this->recordShare(
-                        $endorsement,
+                        $offer,
                         $response['id'],
                         Broadcaster::FACEBOOK,
                         $this->getShareType($share)

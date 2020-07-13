@@ -16,7 +16,7 @@ class PracticePantherImportContactsCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('eendorsements:practice-panther-import-contacts')
+            ->setName('eoffers:practice-panther-import-contacts')
             ->setDescription('Import Contacts from Practice Panther Closed Matters');
     }
 

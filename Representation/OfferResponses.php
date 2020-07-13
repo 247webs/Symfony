@@ -6,8 +6,8 @@ use JMS\Serializer\Annotation as Serializer;
 use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
 use Pagerfanta\Pagerfanta;
 
-/** @Serializer\XmlRoot("endorsement_responses") */
-class EndorsementResponses implements RepresentationInterface
+/** @Serializer\XmlRoot("offer_responses") */
+class OfferResponses implements RepresentationInterface
 {
     /**
      * @Serializer\XmlKeyValuePairs
@@ -15,9 +15,9 @@ class EndorsementResponses implements RepresentationInterface
     public $meta;
 
     /**
-     * @Serializer\Type("array<AppBundle\Document\EndorsementResponse>")
-     * @Serializer\XmlList(inline=true, entry="EndorsementResponse")
-     * @Serializer\SerializedName("endorsement_responses")
+     * @Serializer\Type("array<AppBundle\Document\OfferResponse>")
+     * @Serializer\XmlList(inline=true, entry="OfferResponse")
+     * @Serializer\SerializedName("offer_responses")
      */
     public $data;
 

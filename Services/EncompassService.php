@@ -421,7 +421,7 @@ class EncompassService
      * @param array $loanOfficer
      * @return EncompassLoanOfficer
      */
-    public function getEndorsementLoanOfficer(EncompassToken $encompassToken, array $loanOfficer)
+    public function getOfferLoanOfficer(EncompassToken $encompassToken, array $loanOfficer)
     {
         $loanOfficerId = $loanOfficer['id'];
         return $this->em->getRepository(EncompassLoanOfficer::class)

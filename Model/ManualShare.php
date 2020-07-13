@@ -26,11 +26,11 @@ class ManualShare
     private $broadcasterType;
 
     /**
-     * @var string $endorsementId
+     * @var string $offerId
      * @Serializer\Type("string")
      * @Assert\NotBlank()
      */
-    private $endorsementId;
+    private $offerId;
 
     /**
      * @var string $sharingType
@@ -80,17 +80,17 @@ class ManualShare
     /**
      * @return string
      */
-    public function getEndorsementId(): string
+    public function getOfferId(): string
     {
-        return $this->endorsementId;
+        return $this->offerId;
     }
 
     /**
-     * @param string $endorsementId
+     * @param string $offerId
      */
-    public function setEndorsementId(string $endorsementId)
+    public function setOfferId(string $offerId)
     {
-        $this->endorsementId = $endorsementId;
+        $this->offerId = $offerId;
     }
 
     /**

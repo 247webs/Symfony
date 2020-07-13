@@ -2,7 +2,7 @@
 
 namespace AppBundle\BroadcastManagers;
 
-use AppBundle\Document\EndorsementResponse;
+use AppBundle\Document\OfferResponse;
 use AppBundle\Document\Sharing\SharingProfile;
 use AppBundle\Entity\User;
 use AppBundle\Model\Share;
@@ -17,7 +17,7 @@ interface BroadcastManagerInterface
 
     public function share(Share $share);
 
-    public function getPostContent(Share $share, EndorsementResponse $endorsement);
+    public function getPostContent(Share $share, OfferResponse $offer);
 
     public function getBanner(User $user);
 }

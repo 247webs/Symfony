@@ -12,7 +12,7 @@ class LegacyAddressImportCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('eendorsements:migrateaddresses')
+            ->setName('eoffers:migrateaddresses')
             ->setDescription('Migrate Addresses');
     }
 

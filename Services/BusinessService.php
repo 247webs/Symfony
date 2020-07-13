@@ -86,7 +86,7 @@ class BusinessService
             $result[$key]['name']                   = $profile->getName();
             $result[$key]['type']                   = $profileType;
             $result[$key]['rating']                 = $profile->getAverageRating()*5;
-            $result[$key]['scorable_endorsements']  = $profile->getScorableEndorsements();
+            $result[$key]['scorable_offers']  = $profile->getScorableOffers();
 
             /** Get profile slug */
             switch ($profileType) {

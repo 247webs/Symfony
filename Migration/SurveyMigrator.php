@@ -52,7 +52,7 @@ class SurveyMigrator
 
             if ($survey) {
                 $redirects[] = 'Redirect 301 /request/' . $user['username'] . '/service' .
-                    ' https://eendorsements.com/survey/' . base64_encode($survey->getId());
+                    ' https://eoffers.com/survey/' . base64_encode($survey->getId());
             }
         }
 

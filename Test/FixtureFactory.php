@@ -85,7 +85,7 @@ class FixtureFactory
      * @param int $surveyId
      * @return array
      */
-    public static function anEndorsementRequest($surveyId)
+    public static function anOfferRequest($surveyId)
     {
         $faker = Factory::create();
 
@@ -98,10 +98,10 @@ class FixtureFactory
     }
 
     /**
-     * @param string $endorsementRequestId
+     * @param string $offerRequestId
      * @return array
      */
-    public static function anEndorsementResponse(string $endorsementRequestId)
+    public static function anOfferResponse(string $offerRequestId)
     {
         $faker = Factory::create();
 
@@ -115,7 +115,7 @@ class FixtureFactory
             'company_name' => $faker->company,
             'title' => $faker->title,
             'can_share' => $faker->boolean,
-            'endorsement_request' => ['id' => $endorsementRequestId],
+            'offer_request' => ['id' => $offerRequestId],
         ];
     }
 

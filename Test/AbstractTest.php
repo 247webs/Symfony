@@ -11,7 +11,7 @@ use Symfony\Component\Routing\RequestContext;
 
 class AbstractTest extends KernelTestCase
 {
-    const HOST = 'api.eendorsements.dev';
+    const HOST = 'api.eoffers.dev';
     const ADMIN_USERNAME = 'admin@example.org';
     const ADMIN_PASSWORD = 'qwerty';
 

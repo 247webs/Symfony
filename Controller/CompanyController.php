@@ -6,7 +6,7 @@ use AppBundle\Model\ApiProblem;
 use AppBundle\Entity\Company;
 use AppBundle\Exception\ApiProblemException;
 use AppBundle\Report\StatisticsReporter;
-use AppBundle\Representation\PublicEndorsements;
+use AppBundle\Representation\PublicOffers;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -49,7 +49,7 @@ class CompanyController extends FOSRestController
     }
 
     /**
-     * @Rest\Get(path="/{company}/endorsements", name="company_endorsements_get")
+     * @Rest\Get(path="/{company}/offers", name="company_offers_get")
      *
      * @ParamConverter(
      *     "company",
@@ -76,12 +76,12 @@ class CompanyController extends FOSRestController
      *      name="videos_only",
      *      requirements="true|false",
      *      default="false",
-     *      description="Only return endorsements with videos"
+     *      description="Only return offers with videos"
      * )
      *
      * @Doc\ApiDoc(
      *      section="Company",
-     *      description="Get company endorsements",
+     *      description="Get company offers",
      *      https="true",
      *      statusCodes={
      *         200="Success",
@@ -89,7 +89,7 @@ class CompanyController extends FOSRestController
      *     }
      * )
      */
-    public function getEndorsementsAction(Company $company, ParamFetcherInterface $paramFetcher)
+    public function getOffersAction(Company $company, ParamFetcherInterface $paramFetcher)
     {
         ini_set('memory_limit', '1G'); // Boost the memory
         ini_set('max_execution_time', 0); // Allow unlimited execution time for companies only
@@ -108,25 +108,25 @@ class CompanyController extends FOSRestController
         'true' == strtolower($paramFetcher->get('videos_only'))
             ? true : false;
 
-        $endorsements = $this->get('company_service')->getCompanyEndorsementFeed($company, $videosOnly);
+        $offers = $this->get('company_service')->getCompanyOfferFeed($company, $videosOnly);
 
-        if (!count($endorsements)) {
-            throw new NotFoundHttpException($company->getName() . " does not have any endorsements to share yet");
+        if (!count($offers)) {
+            throw new NotFoundHttpException($company->getName() . " does not have any offers to share yet");
         }
 
         $statService = $this->get('statistic_service');
 
-        return new PublicEndorsements(
+        return new PublicOffers(
             $statService->calculateAverageScoreByCompany($company),
-            $endorsements,
-            $statService->countScorableEndorsementsByCompany($company),
+            $offers,
+            $statService->countScorableOffersByCompany($company),
             $page,
             $limit
         );
     }
 
     /**
-     * @Rest\Get(path="/{company}/endorsements/summary", name="company_endorsements_summary_get")
+     * @Rest\Get(path="/{company}/offers/summary", name="company_offers_summary_get")
      *
      * @ParamConverter(
      *     "company",
@@ -137,7 +137,7 @@ class CompanyController extends FOSRestController
      *
      * @Doc\ApiDoc(
      *      section="Company",
-     *      description="Get company endorsements summary",
+     *      description="Get company offers summary",
      *      https="true",
      *      statusCodes={
      *         200="Success",
@@ -145,13 +145,13 @@ class CompanyController extends FOSRestController
      *     }
      * )
      */
-    public function getEndorsementsSummaryAction(Company $company)
+    public function getOffersSummaryAction(Company $company)
     {
         $response = new \StdClass;
         $statService = $this->get('statistic_service');
 
 
-        $response->total_endorsements = $statService->countScorableEndorsementsByCompany($company);
+        $response->total_offers = $statService->countScorableOffersByCompany($company);
         $response->average_rating = $statService->calculateAverageScoreByCompany($company);
 
         return $this->view((array) $response, Response::HTTP_OK);

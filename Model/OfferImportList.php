@@ -5,13 +5,13 @@ namespace AppBundle\Model;
 use AppBundle\Validator\Constraints as CustomConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class EndorsementImportList
+class OfferImportList
 {
     /**
      * @Assert\NotBlank(
      *     message="Map is required"
      * )
-     * @CustomConstraint\EndorsementImportMapConstraint(
+     * @CustomConstraint\OfferImportMapConstraint(
      *     message="Map is invalid"
      * )
      */

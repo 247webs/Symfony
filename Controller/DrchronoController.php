@@ -144,7 +144,7 @@ class DrchronoController extends FOSRestController
      *
      * @Doc\ApiDoc(
      *      section="Drchrono",
-     *      description="Map doctors to the eEndorsement users",
+     *      description="Map doctors to the eOffer users",
      *      https="true",
      *      statusCodes={
      *         201 = "Returned when successful",

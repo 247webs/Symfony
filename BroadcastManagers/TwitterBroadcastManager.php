@@ -51,9 +51,9 @@ class TwitterBroadcastManager extends BroadcastManagerAbstract implements Broadc
             }
         }
 
-        // Find endorsements for each share.
+        // Find offers for each share.
         if (count($shares)) {
-            $shares = $this->addEndorsementsToShares($shares, Broadcaster::TWITTER);
+            $shares = $this->addOffersToShares($shares, Broadcaster::TWITTER);
         }
 
         return $shares;
@@ -75,8 +75,8 @@ class TwitterBroadcastManager extends BroadcastManagerAbstract implements Broadc
 
     public function share(Share $share)
     {
-        foreach ($share->getEndorsements() as $endorsement) {
-            $content = $this->getPostContent($share, $endorsement);
+        foreach ($share->getOffers() as $offer) {
+            $content = $this->getPostContent($share, $offer);
 
             if (null !== $content->status) {
                 /** @var TwitterBroadcaster $broadcaster */
@@ -91,7 +91,7 @@ class TwitterBroadcastManager extends BroadcastManagerAbstract implements Broadc
 
                 if (false !== $response) {
                     $this->recordShare(
-                        $endorsement,
+                        $offer,
                         $response,
                         Broadcaster::TWITTER,
                         $this->getShareType($share)
@@ -101,7 +101,7 @@ class TwitterBroadcastManager extends BroadcastManagerAbstract implements Broadc
         }
     }
 
-    public function getPostContent(Share $share, EndorsementResponse $endorsement)
+    public function getPostContent(Share $share, OfferResponse $offer)
     {
         $company = $share->getCompany();
         $branch  = $share->getBranch();
@@ -109,7 +109,7 @@ class TwitterBroadcastManager extends BroadcastManagerAbstract implements Broadc
         $url = $this->container->getParameter('ng');
         $content = new \stdClass;
 
-        $content->status = $this->getEndorsementComments($endorsement);
+        $content->status = $this->getOfferComments($offer);
 
         if (null !== $content->status) {
             if (null !== $company) {

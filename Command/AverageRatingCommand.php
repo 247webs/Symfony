@@ -16,8 +16,8 @@ class AverageRatingCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('eendorsements:averageRating')
-            ->setDescription('Command script to calculate and Store Average rating and Scorable Endorsements of all the profiles (user/branch/company) of given user')
+            ->setName('eoffers:averageRating')
+            ->setDescription('Command script to calculate and Store Average rating and Scorable Offers of all the profiles (user/branch/company) of given user')
             ->addArgument('userId', InputArgument::REQUIRED);
     }
 
@@ -27,7 +27,7 @@ class AverageRatingCommand extends ContainerAwareCommand
 
         $container = $this->getContainer();
 
-        if ($container->getParameter('crons_enabled') == "true" || $container->getParameter('ng') == "https://staging.eendorsements.com") {
+        if ($container->getParameter('crons_enabled') == "true" || $container->getParameter('ng') == "https://staging.eoffers.com") {
 
             $userId = $input->getArgument('userId');
             $output->writeln("====Average Rating Command for ".$userId." user is Started====");
@@ -40,40 +40,40 @@ class AverageRatingCommand extends ContainerAwareCommand
 
             $statService = $container->get('statistic_service');
 
-            /** Update average scores and scorable endorsements in user profile */
+            /** Update average scores and scorable offers in user profile */
             $userProfile = $em->getRepository(UserProfile::class)->getProfileByUserSlug($user->getSlug());
             if($userProfile) {
                 $output->writeln("====User Profile Found====");
                 $userAverageScore = $statService->calculateAverageScoreByUser($user);
-                $userScorableEndorsements = $statService->countScorableEndorsementsByUser($user);
+                $userScorableOffers = $statService->countScorableOffersByUser($user);
                 $userProfile->setAverageRating($userAverageScore);
-                $userProfile->setScorableEndorsements($userScorableEndorsements);
+                $userProfile->setScorableOffers($userScorableOffers);
                 $em->persist($userProfile);
                 $em->flush();
                 $output->writeln("====Average rating is calculated and saved====");
             }
 
-            /** Update average scores and scorable endorsements in branch profile */
+            /** Update average scores and scorable offers in branch profile */
             $branchProfile = $em->getRepository(BranchProfile::class)->getProfileByBranchSlug($branch->getSlug());
             if($branchProfile) {
                 $output->writeln("====Branch Profile Found====");
                 $branchAverageScore = $statService->calculateAverageScoreByBranch($branch);
-                $branchScorableEndorsements = $statService->countScorableEndorsementsByBranch($branch);
+                $branchScorableOffers = $statService->countScorableOffersByBranch($branch);
                 $branchProfile->setAverageRating($branchAverageScore);
-                $branchProfile->setScorableEndorsements($branchScorableEndorsements);
+                $branchProfile->setScorableOffers($branchScorableOffers);
                 $em->persist($branchProfile);
                 $em->flush();
                 $output->writeln("====Average rating is calculated and saved====");
             }
 
-            /** Update average scores and scorable endorsements in company profile */
+            /** Update average scores and scorable offers in company profile */
             $companyProfile = $em->getRepository(CompanyProfile::class)->getProfileByCompanySlug($company->getSlug());
             if($companyProfile) {
                 $output->writeln("====Company Profile Found====");
                 $companyAverageScore = $statService->calculateAverageScoreByCompany($company);
-                $companyScorableEndorsements = $statService->countScorableEndorsementsByCompany($company);
+                $companyScorableOffers = $statService->countScorableOffersByCompany($company);
                 $companyProfile->setAverageRating($companyAverageScore);
-                $companyProfile->setScorableEndorsements($companyScorableEndorsements);
+                $companyProfile->setScorableOffers($companyScorableOffers);
                 $em->persist($companyProfile);
                 $em->flush();
                 $output->writeln("====Average rating is calculated and saved====");

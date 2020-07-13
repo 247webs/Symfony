@@ -119,7 +119,7 @@ class OpendentalController extends FOSRestController
      *
      * @Doc\ApiDoc(
      *      section="Opendental",
-     *      description="Get a list of practitioners mapped to the eEndorsements users",
+     *      description="Get a list of practitioners mapped to the eOffers users",
      *      https="true",
      *      statusCodes={
      *         201 = "Returned when successful",
@@ -142,7 +142,7 @@ class OpendentalController extends FOSRestController
      *
      * @Doc\ApiDoc(
      *      section="Open Dental",
-     *      description="Map Practitioners to the eEndorsement users. Will truncate current mapped practitioners.",
+     *      description="Map Practitioners to the eOffer users. Will truncate current mapped practitioners.",
      *      https="true",
      *      statusCodes={
      *         201 = "Returned when successful",

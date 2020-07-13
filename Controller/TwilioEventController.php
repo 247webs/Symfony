@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Document\EndorsementRequest;
+use AppBundle\Document\OfferRequest;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -20,7 +20,7 @@ class TwilioEventController extends FOSRestController
     /**
      * @Rest\Post(path="/{id}", name="twilio_callback_post")
      */
-    public function callbackAction(EndorsementRequest $id, Request $request)
+    public function callbackAction(OfferRequest $id, Request $request)
     {
         $status = $request->request->get('SmsStatus');
 
@@ -28,13 +28,13 @@ class TwilioEventController extends FOSRestController
             $getter = sprintf('get%s', ucfirst($status));
             $setter = sprintf('set%s', ucfirst($status));
 
-            // Record just one stat per endorsement request
+            // Record just one stat per offer request
             if (null === $id->$getter()) {
                 $this->get('twilio_service')->recordStatistic($id, $status);
             }
 
             $id->$setter(new \DateTime);
-            $this->get('endorsement_request_service')->save($id);
+            $this->get('offer_request_service')->save($id);
         }
 
         return $this->view([], Response::HTTP_OK);

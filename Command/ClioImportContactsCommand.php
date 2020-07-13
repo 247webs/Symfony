@@ -12,7 +12,7 @@ class ClioImportContactsCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('eendorsements:importcliocontacts')
+            ->setName('eoffers:importcliocontacts')
             ->setDescription('Import contacts from Clio');
     }
 
@@ -41,7 +41,7 @@ class ClioImportContactsCommand extends ContainerAwareCommand
                         $clioUser = $matter['responsible_attorney'];
                         $client = $matter['client'];
 
-                        // If Clio user is mapped with the endorsement users
+                        // If Clio user is mapped with the offer users
                         $mappedUser = $clioService->getMappedUser($clioToken, $clioUser['id']);
                         if ($mappedUser) {
                             $user = $mappedUser->getUser();

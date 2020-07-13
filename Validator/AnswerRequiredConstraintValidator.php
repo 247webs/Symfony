@@ -7,7 +7,7 @@ use AppBundle\Document\Answer\DropdownAnswer;
 use AppBundle\Document\Answer\MultipleChoiceAnswer;
 use AppBundle\Document\Answer\SingleTextboxAnswer;
 use AppBundle\Document\Answer\StarRatingAnswer;
-use AppBundle\Document\EndorsementResponseAnswer;
+use AppBundle\Document\OfferResponseAnswer;
 use AppBundle\Entity\SurveyQuestion;
 use AppBundle\Repository\SurveyQuestionRepository;
 use Symfony\Component\Validator\Constraint;
@@ -31,7 +31,7 @@ class AnswerRequiredConstraintValidator extends ConstraintValidator
     }
 
     /**
-     * @param EndorsementResponseAnswer     $answer
+     * @param OfferResponseAnswer     $answer
      * @param Constraint $constraint
      */
     public function validate($answer, Constraint $constraint)

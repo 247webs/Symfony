@@ -367,7 +367,7 @@ class DrchronoService
      * @param Int $doctorId
      * @return DrchronoDoctor
      */
-    public function getEndorsementDoctor(DrchronoPractice $practice, Int $doctorId)
+    public function getOfferDoctor(DrchronoPractice $practice, Int $doctorId)
     {
         return $this->em->getRepository(DrchronoDoctor::class)
             ->findOneBy(['drchronoPractice' => $practice->getId(), 'drchronoDoctorId' => $doctorId]);
